@@ -200,15 +200,18 @@ update the plot they must touch all 5 objects in turn.  Instead, we
 should be providing the user with a single object on which they can
 interact with to update all of the underlying \texttt{Artist}s.
 
+- mention events / picking / user interaction
 
-\subsubsection{Functional API}
+\subsubsection{API generalization}
+Currently Matplotlib has two main user-facing APIs:
+- pyplot vs OO
+- talk about making 3rd party feel like first-party
+- talk about multi-axes plotting routines
 
 
 
 
-
-
-\subsubsection{new visitor patterns}
+\subsubsection{Additional Export Methods}
 
 \begin{itemize}
 \item currently have 'draw' which takes in a canvas and render's itself
@@ -233,6 +236,35 @@ that our plans actually to make things easier for them.
 
 Develop tools / documentation / guidelines to easily spin-up a new
 downstream package.
+
+- sklearn
+- skimage
+- cellprofiler
+- nipy
+- scanpy
+- starfish
+
+
+\subsection{Expected outcomes, success evaluation and metrics}
+\subsubsection{Issue and PR curation}
+- set targets
+ - consistently have net negative month over month in both issues an PRs
+ - new issues / PRs triaged with in 7 days of being opened
+ - numpy has had success in this direction
+ - ``healthy'' would be 20\% of where we are
+ - full review of all open issues, assign action, priority, estimated difficulty
+ -
+
+ two types of labels
+ - action labels
+ - domain labels
+ - difficulty labels
+
+\subsubsection{Architecture and down stream engagement}
+- white paper on new architecture
+- documented use-cases
+- prototypes
+
 
 
 \section{Work Plan}
