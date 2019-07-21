@@ -10,51 +10,51 @@
 
 
 \begin{document}
-\title{​​Matplotlib - Foundation of Visualization in Python}
+\title{Matplotlib - Foundation of Visualization in Python}
 \author{}
 \maketitle
 
 
 The purpose of this proposal is to enable Matplotlib to continue
 serving as the primary plotting library of the scientific Python
-ecosystem.  We will respond to the backlog of issues and suggestions,
-and plan Matplotlib's evolution to meet the challenges of the coming
-decade.
+ecosystem.  We will respond to the backlog of Issues and Pull
+Requests and plan Matplotlib's evolution to meet the challenges
+of the coming decade.
 
 By most measures Matplotlib is a wildly successful project.  The
 source has been actively developed and maintained by a vibrant
-community over the last 16 years.  Conservatively we have 1M monthly
+community over the last 16 years.  Conservatively, we have 1M monthly
 users across the wide spectrum of fields, including bio-medical
 imaging, microscopy, and genomics
 \cite{Carpenter2006,Wolf2018,10.7717/peerj.453}
 \cite{Segata2011,10.1371/journal.pgen.1000695,HASHIMSHONY2012666,
   10.1093/bioinformatics/bts480,Carlile2014,Laganowsky2014,Jiangaac9462,
-  10.3389/fninf.2014.00014}.
-Our user base continues to grow as Python is adopted by more
-scientists in the life sciences.  However, given the scale and scope
-of the project, we are at the limit of what can be maintained and
-developed with primarily volunteer effort. This proposal identifies
-three key areas where we need sustained support to ensure the health
-of the platform and provide the leadership to meet the visualization
-challenges of the next 16 years:
+  10.3389/fninf.2014.00014}.  Our user base continues to grow as
+Python is adopted by more scientists in the life sciences.  However,
+given the scale and scope of the project, we are at the limit of what
+can be developed and maintained with primarily volunteer effort. This
+proposal identifies three key areas where we need sustained support to
+ensure the health of the platform and provide the leadership to meet
+the visualization challenges of the next 16 years:
 
 \begin{enumerate}[label=\alph*)]
   \item Maintenance of the library by curating existing and new Issues
     and Pull Requests.
-  \item Developing a comprehensive plan to update the core Architecture
+  \item Developing a comprehensive plan to evolve the core Architecture
     of Matplotlib
   \item Developing the tools, documentation, and community to support
     a rich eco-system of domain specific plotting tools built on top
-    of Matplotilb.
+    of Matplotlib.
 \end{enumerate}
 
 We propose to fund Thomas Caswell (PI) for 6 months, Hannah Aizenman
-for 12 months, and a third yet-identified software engineer to work on
-these tasks.  Caswell is the lead developer of Matplotlib and an
-Associate Computational Scientist at Brookhaven National Laboratory.
-Aizenman is a core-contributor to Matplotlib who has previously worked
-on datatypes and outreach, and a PhD student in computer science
-studying visualization at The City College of New York.
+for 12 months, and a third yet-identified software engineer for 12
+Months to work on these tasks.  Caswell is the lead developer of
+Matplotlib and an Associate Computational Scientist at Brookhaven
+National Laboratory.  Aizenman is a core-contributor to Matplotlib,
+who has previously worked on datatypes and outreach, and a PhD student
+in computer science studying visualization at The City College of New
+York.
 
 
 \section{Goals}
@@ -74,25 +74,27 @@ to an obvious negative feedback loop, where the community does not
 grow in a healthy and sustainable manner.
 
 The developer time asked for here will partly go towards active and
-sustained curation of issues and pull requests.  By having a small
-team working at least half time on Matplotlib we can ensure that :
+sustained curation of issues and pull requests.  A small team working
+at least half time on Matplotlib maintenance we can ensure that :
 
 \begin{itemize}
-\item old issues are dealt with and new issues receive quick engagement
-\item new contributors are effectively on-boarded to the project team
-\item backward compatibility is maintained as much as possible and
-  that when we do break backward compatibility it is intentional and
-  well documented
-\item group decisions as to whether proposed enhancements and features
-  should be implemented will be better managed
+\item Old issues are dealt with and new issues receive quick
+  engagement.  Issues need to be sorted in terms of how critical
+  and how difficult they are to fix.
+\item New contributors are effectively on-boarded to the project team.
+\item Backward compatibility is maintained as much as practical.  If
+  we do break API it should be intentional and well documented.
+\item Group decisions about implemented proposed enhancements and features
+  or breaking API are well managed.
 \end{itemize}
 
 None of this is to demote the importance of the volunteer
-contributors, but it will lead to a better co-ordination and nurturing
-of their efforts, with the goal of growing a diverse community of
-expert contributors.
+contributors, but will lead to a better co-ordination and nurturing of
+their efforts, with the goal of growing and sustaining a diverse
+community of expert contributors.  This community will continue to
+sustain the project in the future.
 
-\subsection{Roadmap and Architecture Design}
+\subsection{Road-map and Architecture Design}
 
 The current architecture of Matplotlib was first designed 15 years ago
 \cite{Hunter:2007}.  That it is still in use and alive is a testament
@@ -100,32 +102,63 @@ to its initial design, however it does not reflect all of the
 developments in thinking around data structures, software design, and
 visualization of the past decade.  Matplotlib does not natively know
 how to exploit structured data (e.g. \texttt{pandas} or
-\texttt{xarray}) objects or to seamlessly handle streaming data.
+\texttt{xarray}) objects or to seamlessly handle streaming data.  We
+will look at how to update Matplotlib's internal data model to
+leverage the information embedded in structured data.  While there are
+downstream domain specific libraries that are built on top of
+Matplotlib, interoperability between core Matplotlib and each other
+can be fraught.  We will develop plans of how to re-factor the core
+library to allow easy extension and smooth interoperability between
+the core library and mutually between the domain specific plotting
+tools.
+
+In both cases we will develop clear requirement documents, document
+critical use cases, and implement prototypes of the features and APIs.
+
 
 \subsubsection{Data Model}
 
-Structured data combines one or more data sets into an object that
-also contains dimensions and co-ordinates of the data (i.e. think of a
+``Structured data'' combines one or more arrays into an object that
+also contains labels, dimensions, and co-ordinates of the data (i.e. a
 map of global surface temperatures containing $T$ , $latitude$ and
 $longitude$ being packed together in an object along with all the
-relevant meta data).  Currently Matplotlib asks the users or
-downstream libraries to split this information into its components and
-pass them individually to plotting methods, losing the structure of
-the data.  User data is
+relevant meta data).  In addition to the data itself, these objects
+also carry information about the relationship between the sub-parts.
+Currently Matplotlib asks the users or downstream libraries to split
+this information into its components and pass them individually to
+plotting methods, losing the structure and relation ships.
+Internally, each plotting method (and the objects used to represent
+the plots, \texttt{Artist}s in the jargon) each handle normalizing and
+storing user data independently.  This means that some common
+functionality, such as handling data with attached units (i.e. degrees
+Celsius) and ensuring that all data cast to numpy arrays, is scattered
+through out the code base.  This leads to inconsistencies in the
+behavior across the library and makes it difficult to write code that
+updates the user data displayed that works across all types of plots.
 
-Similarly, Matplotlib has support for handling data with associated
-units (i.e. degrees Celsius), but this has been a difficult due to
-given the many places where data may be stored, and hence will need to
-handle units, throughout the package.
 
-Similarly, the way user data is
-stored internally makes it challenging to make interactive, streaming,
-and animated visualizations.
+Here we propose to put significant effort into re-designing the data
+model for Matplotlib, and take steps towards implementing it.  The
+goal is to have a simple model appropriate for the base Matplotlib
+library and, more importantly, to have the technical underpinning in
+place that will allow domain-specific downstream libraries be able to
+handle structured or streamed data in a coherent fashion.  By removing
+the direct data storage from the \tetxttt{Artist}s and defining an API
+for data objects we will make easy to
+\begin{itemize}
+  \item smart up/down sampling of plotted data based on view limits
+  \item seamlessly handling user-updated data, either streaming or
+  \item backing the plot with non-numpy arrays, including queries to a
+    database
+\end{itemize}
+All of these are currently \textit{technically} possible, they require
+a significant amount of customization and do not readily generalize.
+By defining a clear API to access data we will be able to de-couple the
+development of the data storage and the \texttt{Artist}s.
 
-The user must know the details about how
-to update each of the individual elements.c
 
-\subsubsection{Interactivity and Streaming}
+\subsubsection{Rich \texttt{Artist}s}
+
 \subsubsection{Homogenization of the API}
 
 The library has grown organically over time through the contributions
@@ -137,7 +170,7 @@ argument names. These subtle issues add friction for users, but are
 not easy to fix.  To bring all of the APIs into harmony requires
 knowing what \textbf{all} of the APIs are which requires dedicated
 effort.  However, the biggest problem to harmonizing our APIs and
-getting to “one obvious way to do things” is that due to our large
+getting to ``one obvious way to do things'' is that due to our large
 user base any API changes can have major negative impacts.  The
 combination of these three things has left us in a bind, very similar
 to numpy, where the burden of back compatibility is a significant
@@ -145,24 +178,44 @@ constraint on future progress.  Understanding all of these consequences
 and mitigating them requires significant engineering effort and
 absorbs much of the available volunteer developer effort.
 
+\subsubsection{new visitor patterns}
 
+\begin{itemize}
+\item currently have 'draw' which takes in a canvas and render's itself
+\item add 'export' which will provide a high-level json-like (use to
+  implement non-pickle save/restore, export to {bokeh, plotly,
+    qtplotting})
+\item add a lower-level scene-graph like representation (suitable to push to a GPU?)
+\end{itemize}
 
 \subsection{Coordination with downstream projects}
 
+Much of the domain-specific specialization is carried in the semantics
+of the structured data, so even once core Matplotlib can handle structured
+data natively, there will still be a need for
+
+Downstream libraries can provide any or all of tuned user-facing
+functions, tuned artists, or a tuned data layer.
+
+We will have to engage with current down stream projects to make sure
+that our plans actually to make things easier for them.
+
+
 \section{Work Plan}
+
 The funds will be paid to:
 
 \begin{itemize}
 
 \item Fund Thomas Caswell's position for 6 months.  Caswell is
-  currently the lead developer of Matplotilb.  His long-term
+  currently the lead developer of Matplotlib.  His long-term
   experience, API design expertise, and project leadership are critical
   to the success of the work in this proposal.
 \item Fund Hannah Aizenman's position for 12 months.  Aizenman has
   been a core-contributor Matplotlib for three years and has
   previously contributed support for string-categorical values.  Her
   work on the design of Matplotlib will be the basis of her PhD
-  thesis.  Aizenmen will take the lead on new-contributor on-boarding.
+  thesis.  Aizenman will take the lead on new-contributor on-boarding.
 \item Fund 12 months of a yet-to-be identified software engineer to
   support all aspects of the proposal.  This may also cover travel to
   NYC for meetings if the third developer is remote.
@@ -177,7 +230,7 @@ code from community members rather than directly implementing features
 or fixing bugs.  All of the design work will be done in public with
 input from the community.
 
-Part of this work is to develop the project roadmap.
+Part of this work is to develop the project road-map.
 
 
 \section{Existing Support}
