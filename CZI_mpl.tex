@@ -14,50 +14,50 @@
 \author{}
 \maketitle
 
+\section{Goals}
 
-The purpose of this proposal is to enable Matplotlib to continue
-serving as the primary plotting library of the scientific Python
-ecosystem.  We will respond to the backlog of Issues and Pull
-Requests and plan Matplotlib's evolution to meet the challenges
-of the coming decade.
+The purpose of this proposal is to plan Matplotlib's evolution to meet
+the visualization challenges of the coming decade and reduce backlog
+of currently open Issues and Pull Requests.
 
-By most measures Matplotlib is a wildly successful project.  The
-source has been actively developed and maintained by a vibrant
-community over the last 16 years.  Conservatively, we have 1M monthly
-users across the wide spectrum of fields, including bio-medical
-imaging, microscopy, and genomics
+By most measures Matplotlib is a wildly successful project; the source
+has been actively developed and maintained by a vibrant primarily
+volunteer community over the last 16 years and, conservatively, has
+over a million users across the wide spectrum of fields, including
+bio-medical imaging, microscopy, and genomics
 \cite{Carpenter2006,Wolf2018,10.7717/peerj.453}
 \cite{Segata2011,10.1371/journal.pgen.1000695,HASHIMSHONY2012666,
   10.1093/bioinformatics/bts480,Carlile2014,Laganowsky2014,Jiangaac9462,
-  10.3389/fninf.2014.00014}.  Our user base continues to grow as
-Python is adopted by more scientists in the life sciences.  However,
-given the scale and scope of the project, we are at the limit of what
-can be developed and maintained with primarily volunteer effort. This
-proposal identifies three key areas where we need sustained support to
-ensure the health of the platform and provide the leadership to meet
-the visualization challenges of the next 16 years:
+  10.3389/fninf.2014.00014}.  We expect our user base to continue to
+grow as Python is adopted by more scientists in the life sciences.
+However, given the scale, scope, and importance of the project, we are
+at the limit of what can be developed and maintained with primarily
+volunteer effort.  This proposal identifies three key areas where we
+need sustained support to ensure the health of the platform and
+provide the leadership to meet the visualization challenges of the
+next 16 years:
 
 \begin{enumerate}[label=\alph*)]
   \item Maintenance of the library by curating existing and new Issues
     and Pull Requests.
-  \item Developing a comprehensive plan to evolve the core Architecture
-    of Matplotlib
-  \item Developing the tools, documentation, and community to support
-    a rich eco-system of domain specific plotting tools built on top
+  \item Developing a comprehensive plan to evolve the core architecture
     of Matplotlib.
+  \item Developing the tools, documentation, and community to foster a
+    rich eco-system of domain specific plotting tools built on
+    Matplotlib.
 \end{enumerate}
 
 We propose to fund Thomas Caswell (PI) for 6 months, Hannah Aizenman
-for 12 months, and a third yet-identified software engineer for 12
-Months to work on these tasks.  Caswell is the lead developer of
-Matplotlib and an Associate Computational Scientist at Brookhaven
-National Laboratory.  Aizenman is a core-contributor to Matplotlib,
-who has previously worked on datatypes and outreach, and a PhD student
-in computer science studying visualization at The City College of New
+for 12 months, and a yet-identified software engineer for 12 months to
+work on these tasks.  Caswell is the lead developer of Matplotlib and
+an Associate Computational Scientist at Brookhaven National
+Laboratory.  Aizenman is a core-contributor to Matplotlib, who has
+previously worked on datatypes and outreach, and a PhD student in
+computer science studying visualization at The City College of New
 York.
 
 
-\section{Goals}
+
 \subsection{Curating Pull Requests and Issues}
 
 The rate at which new Issues and Pull Requests come into the project
@@ -73,44 +73,45 @@ familiarity with the code that they are able to review PRs. This leads
 to an obvious negative feedback loop, where the community does not
 grow in a healthy and sustainable manner.
 
-The developer time asked for here will partly go towards active and
-sustained curation of issues and pull requests.  A small team working
-at least half time on Matplotlib maintenance we can ensure that :
+We propose to fund Caswell, Aizenman, and the SWE to curate the open
+issues and pull requests.  Specifically this work will involve:
 
 \begin{itemize}
-\item Old issues are dealt with and new issues receive quick
-  engagement.  Issues need to be sorted in terms of how critical
-  and how difficult they are to fix.
-\item New contributors are effectively on-boarded to the project team.
-\item Backward compatibility is maintained as much as practical.  If
-  we do break API it should be intentional and well documented.
-\item Group decisions about implemented proposed enhancements and features
-  or breaking API are well managed.
+\item Sorting the current backlog of Issues and Pull Requests
+  them in terms of how importance and how difficultly.
+\item Ensuring that newly opened Issues are sorted and Pull Requests
+  are reviewed in a timely manner.
+\item On-boarded new contributors to the project team.  This is
+  critical to sustaining and diversifying our developer community.
+\item Maintaining Backward compatibility as much as practical.  If we
+  do break API ensuring it is intentional and well documented.
+\item Managing group decisions about proposed enhancements and
+  features or breaking API.
 \end{itemize}
 
 None of this is to demote the importance of the volunteer
-contributors, but will lead to a better co-ordination and nurturing of
-their efforts, with the goal of growing and sustaining a diverse
-community of expert contributors.  This community will continue to
-sustain the project in the future.
+contributors, but instead to better co-ordinate and nurture their
+efforts, with the goal of growing and sustaining a diverse community
+of expert contributors.  This community will continue to sustain the
+project in the future after this funding is exhausted.
 
 \subsection{Road-map and Architecture Design}
 
-The current architecture of Matplotlib was first designed 15 years ago
-\cite{Hunter:2007}.  That it is still in use and alive is a testament
-to its initial design, however it does not reflect all of the
-developments in thinking around data structures, software design, and
-visualization of the past decade.  Matplotlib does not natively know
-how to exploit structured data (e.g. \texttt{pandas} or
-\texttt{xarray}) objects or to seamlessly handle streaming data.  We
-will look at how to update Matplotlib's internal data model to
-leverage the information embedded in structured data.  While there are
-downstream domain specific libraries that are built on top of
-Matplotlib, interoperability between core Matplotlib and each other
-can be fraught.  We will develop plans of how to re-factor the core
-library to allow easy extension and smooth interoperability between
-the core library and mutually between the domain specific plotting
-tools.
+The current
+architecture\footnote{https://www.aosabook.org/en/matplotlib.html} of
+Matplotlib was first designed 15 years ago \cite{Hunter:2007}.  That
+it is still in use is a testament to its initial design, however it
+does not reflect all of the developments in thinking around data
+structures, software design, and visualization of the past decade.
+Matplotlib does not natively know how to exploit structured data
+(e.g. \texttt{pandas} or \texttt{xarray}) objects.  We will look at
+how to update Matplotlib's internal data model to leverage the
+information embedded in structured data.  While there are downstream
+domain specific libraries that are built on top of Matplotlib,
+interoperability between core Matplotlib and each other can be
+fraught.  We will develop plans of how to re-factor the core library
+to allow easy extension and smooth interoperability between the core
+library and mutually between the domain specific plotting tools.
 
 In both cases we will develop clear requirement documents, document
 critical use cases, and implement prototypes of the features and APIs.
@@ -144,10 +145,12 @@ library and, more importantly, to have the technical underpinning in
 place that will allow domain-specific downstream libraries be able to
 handle structured or streamed data in a coherent fashion.  By removing
 the direct data storage from the \tetxttt{Artist}s and defining an API
-for data objects we will make easy to
+for data objects we will make easy to:
 \begin{itemize}
-  \item smart up/down sampling of plotted data based on view limits
-  \item seamlessly handling user-updated data, either streaming or
+  \item implement smart up/down sampling of plotted data based on view
+    limits
+  \item seamlessly handling updating the underlying data, either
+    streaming or interactively
   \item backing the plot with non-numpy arrays, including queries to a
     database
 \end{itemize}
@@ -181,6 +184,7 @@ replace.
 \subsubsection{Functional API}
 
 
+
 \subsubsection{new visitor patterns}
 
 \begin{itemize}
@@ -190,6 +194,9 @@ replace.
     qtplotting})
 \item add a lower-level scene-graph like representation (suitable to push to a GPU?)
 \end{itemize}
+
+\subsubsection{performance}
+Having a rational data model will make managing caching simpler
 
 \subsection{Coordination with downstream projects}
 
