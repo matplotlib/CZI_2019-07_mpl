@@ -151,7 +151,20 @@ MORE ON HOW YOU WILL DO THIS.  IE THE PROCESS.
 A BIT MORE ABOUT THE STREAMING CASE HERE.
 
 **Homogenization of the API**
-The library has grown organically over time through the contributions of many people (800-900 individuals) and the code has accumulated many small inconsistencies between different parts, slightly different argument order (ex `ax.text(x, y, s)` vs `ax.annotation(s, (x, y))`) or spelling/pluralization of argument names. These subtle issues add friction for users, but are not easy to fix.  To bring all of the APIs into harmony requires knowing what *all* of the APIs are which requires dedicated effort.  However, the biggest problem to harmonizing our APIs and getting to “one obvious way to do things” is that due to our large user base any API changes can have major negative impacts.   The combination of these three things has left us in a bind, very similar to numpy, where the burden of back compatibility is a significant constraint on future progress.
+
+The library has grown organically over time through the contributions
+of many people (800-900 individuals) and the code has accumulated many
+small inconsistencies between different parts, slightly different
+argument order (ex `ax.text(x, y, s)` vs `ax.annotation(s, (x, y))`)
+or spelling/pluralization of argument names. These subtle issues add
+friction for users, but are not easy to fix.  To bring all of the APIs
+into harmony requires knowing what *all* of the APIs are which
+requires dedicated effort.  However, the biggest problem to
+harmonizing our APIs and getting to “one obvious way to do things” is
+that due to our large user base any API changes can have major
+negative impacts.  The combination of these three things has left us
+in a bind, very similar to numpy, where the burden of back
+compatibility is a significant constraint on future progress.
 
 FULL PARAGRAPH ABOUT WHAT WE WILL DO HERE: Understanding all of these consequences and mitigating them requires significant engineering effort and absorbs much of the available volunteer developer effort.
 

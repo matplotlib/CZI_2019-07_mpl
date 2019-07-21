@@ -159,24 +159,27 @@ development of the data storage and the \texttt{Artist}s.
 
 \subsubsection{Rich \texttt{Artist}s}
 
+
 \subsubsection{Homogenization of the API}
 
 The library has grown organically over time through the contributions
-of many people (800-900 individuals) and the code has accumulated many
-small inconsistencies between different parts with slightly different
-argument order (ex \texttt{ax.text(x, y, s)} vs
-\texttt{ax.annotation(s, (x, y))}) or spelling/pluralization of
-argument names. These subtle issues add friction for users, but are
-not easy to fix.  To bring all of the APIs into harmony requires
-knowing what \textbf{all} of the APIs are which requires dedicated
-effort.  However, the biggest problem to harmonizing our APIs and
-getting to ``one obvious way to do things'' is that due to our large
-user base any API changes can have major negative impacts.  The
-combination of these three things has left us in a bind, very similar
-to numpy, where the burden of back compatibility is a significant
-constraint on future progress.  Understanding all of these consequences
-and mitigating them requires significant engineering effort and
-absorbs much of the available volunteer developer effort.
+of many people (approximately 900 individuals) and the code has
+accumulated many small inconsistencies in the API.  Similar methods
+have different argument order, \texttt{ax.text(x, y, s)} vs
+\texttt{ax.annotation(s, (x, y))} and spelling/pluralization of
+argument names, \texttt{color} vs \texttt{colors} through out the
+library.  These subtle issues add friction for users, but are not easy
+to fix.  The biggest problem to harmonizing our APIs and getting to
+``one obvious way to do things'' is that due to our large user base
+any API changes can have major negative impacts.  To bring all of the
+APIs into harmony requires knowing what \textbf{all} of the APIs are
+which requires dedicated effort.  We will have to carefully consider
+what APIs to leave as they are, which to deprecate, and which to
+replace.
+
+
+\subsubsection{Functional API}
+
 
 \subsubsection{new visitor patterns}
 
@@ -192,13 +195,16 @@ absorbs much of the available volunteer developer effort.
 
 Much of the domain-specific specialization is carried in the semantics
 of the structured data, so even once core Matplotlib can handle structured
-data natively, there will still be a need for
+data natively, there will still be a need for domain-specific tools.
 
 Downstream libraries can provide any or all of tuned user-facing
 functions, tuned artists, or a tuned data layer.
 
 We will have to engage with current down stream projects to make sure
 that our plans actually to make things easier for them.
+
+Develop tools / documentation / guidelines to easily spin-up a new
+downstream package.
 
 
 \section{Work Plan}
