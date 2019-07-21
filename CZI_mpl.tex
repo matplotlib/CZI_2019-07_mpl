@@ -104,7 +104,7 @@ it is still in use is a testament to its initial design, however it
 does not reflect all of the developments in thinking around data
 structures, software design, and visualization of the past decade.
 Matplotlib does not natively know how to exploit structured data
-(e.g. \texttt{pandas} or \texttt{xarray}) objects.  We will look at
+(e.g. \texttt{pandas} or \texttt{xarray}) objects.  We will investigate
 how to update Matplotlib's internal data model to leverage the
 information embedded in structured data.  While there are downstream
 domain specific libraries that are built on top of Matplotlib,
@@ -113,55 +113,57 @@ fraught.  We will develop plans of how to re-factor the core library
 to allow easy extension and smooth interoperability between the core
 library and mutually between the domain specific plotting tools.
 
-In both cases we will develop clear requirement documents, document
-critical use cases, and implement prototypes of the features and APIs.
+We will develop clear requirement documents, document critical use
+cases, implement prototypes, and engage with downstream users to
+ensure that both the data model and API overhauls enable domain
+specific plotting tools to be easily built on top of Matplotlib.
 
 
 \subsubsection{Data Model}
 
 ``Structured data'' combines one or more arrays into an object that
 also contains labels, dimensions, and co-ordinates of the data (i.e. a
-map of global surface temperatures containing $T$ , $latitude$ and
-$longitude$ being packed together in an object along with all the
-relevant meta data).  In addition to the data itself, these objects
-also carry information about the relationship between the sub-parts.
+map of global surface temperatures containing \texttt{T} ,
+\texttt{latitude} and \texttt{longitude} being packed together in an
+object along with all the relevant meta data).  In addition to the
+data itself, these objects also carry information about the
+relationship, implicitly or explicitly, between the components.
 Currently Matplotlib asks the users or downstream libraries to split
 this information into its components and pass them individually to
 plotting methods, losing the structure and relation ships.
-Internally, each plotting method (and the objects used to represent
-the plots, \texttt{Artist}s in the jargon) each handle normalizing and
-storing user data independently.  This means that some common
-functionality, such as handling data with attached units (i.e. degrees
-Celsius) and ensuring that all data cast to numpy arrays, is scattered
-through out the code base.  This leads to inconsistencies in the
-behavior across the library and makes it difficult to write code that
-updates the user data displayed that works across all types of plots.
+Internally, each plotting method (and \texttt{Artist}s, the objects
+used to represent the plots) each handle sanitizing and storing user
+input independently.  This means that some common functionality, such
+as handling data with attached units (i.e. degrees Celsius) and the
+data is in a structure we can work with, is scattered through out the
+code base.  This leads to inconsistencies in the behavior across the
+library and makes it difficult to write code that updates the user
+data, critical for interactive exploration, streaming, and animation
+use cases.
 
 
-Here we propose to put significant effort into re-designing the data
-model for Matplotlib, and take steps towards implementing it.  The
+Here we propose to put significant effort into re-designing the
+internal data model for Matplotlib and implementing a prototype.  The
 goal is to have a simple model appropriate for the base Matplotlib
 library and, more importantly, to have the technical underpinning in
 place that will allow domain-specific downstream libraries be able to
-handle structured or streamed data in a coherent fashion.  By removing
-the direct data storage from the \tetxttt{Artist}s and defining an API
-for data objects we will make easy to:
+handle structured and updating data in a coherent fashion.  By
+removing the direct data storage from the \texttt{Artist}s and
+defining an API for data objects we will make easy to:
 \begin{itemize}
-  \item implement smart up/down sampling of plotted data based on view
+  \item implement smart down sampling of plotted data based on view
     limits
   \item seamlessly handling updating the underlying data, either
     streaming or interactively
   \item backing the plot with non-numpy arrays, including queries to a
     database
 \end{itemize}
-All of these are currently \textit{technically} possible, they require
-a significant amount of customization and do not readily generalize.
-By defining a clear API to access data we will be able to de-couple the
-development of the data storage and the \texttt{Artist}s.
-
-
-\subsubsection{Rich \texttt{Artist}s}
-
+By defining a clear API to access data we will be able to de-couple
+the development of the data access and the \texttt{Artist}s.  This
+will enable implementations of the data layer that have exotic
+dependencies to be used with \texttt{Artist}s from the core library or
+third-party \texttt{Artist}s to rely on the data layer from the core
+library.
 
 \subsubsection{Homogenization of the API}
 
@@ -181,7 +183,28 @@ what APIs to leave as they are, which to deprecate, and which to
 replace.
 
 
+
+\subsubsection{Rich Composite \texttt{Artist}s}
+\texttt{Artist}s are the ``middle layer'' of Matplotlib that we use to
+encode user-intent and ``draw'' themselves when displaying a figure to
+the screen or saving to disk.  These are the objects that users
+interact with to update the plotted data for interactive figures,
+streaming data, and generating animations.  There is currently a mix
+of ``primitive'' \texttt{Artist}s, for things like lines, images, and
+patches, and ``composite'' artists for things like the whole
+\texttt{Figure} or the \texttt{Axes}.  However, there is a gap in the
+middle where we use a number of unconnected \textttt{Artist} instance
+to represent multi-component plots.  For example, \texttt{errorbar}
+creates up to 5 independent \textttt{Artist}s, if the user wants to
+update the plot they must touch all 5 objects in turn.  Instead, we
+should be providing the user with a single object on which they can
+interact with to update all of the underlying \texttt{Artist}s.
+
+
 \subsubsection{Functional API}
+
+
+
 
 
 
@@ -195,8 +218,6 @@ replace.
 \item add a lower-level scene-graph like representation (suitable to push to a GPU?)
 \end{itemize}
 
-\subsubsection{performance}
-Having a rational data model will make managing caching simpler
 
 \subsection{Coordination with downstream projects}
 
@@ -227,13 +248,13 @@ The funds will be paid to:
 \item Fund Hannah Aizenman's position for 12 months.  Aizenman has
   been a core-contributor Matplotlib for three years and has
   previously contributed support for string-categorical values.  Her
-  work on the design of Matplotlib will be the basis of her PhD
-  thesis.  Aizenman will take the lead on new-contributor on-boarding.
+  work on the architecture of Matplotlib will be the basis of her PhD
+  thesis.  Aizenman will take the lead on new-contributor on-boarding
+  and the data model.
 \item Fund 12 months of a yet-to-be identified software engineer to
-  support all aspects of the proposal.  This may also cover travel to
-  NYC for meetings if the third developer is remote.
+  support all aspects of the proposal.
 \item Travel to key Scientific and Python conferences (such as SciPy
-  or PyCon)
+  or PyCon) and for in-person meetings if required.
 \end{itemize}
 
 We want to use this dedicated effort to leverage and empower the
