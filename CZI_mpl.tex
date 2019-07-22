@@ -5,7 +5,7 @@
 \usepackage{graphicx}
 \usepackage[hidelinks]{hyperref}
 \usepackage{caption}
-
+\usepackage{footmisc}
 
 
 
@@ -185,86 +185,127 @@ replace.
 
 
 \subsubsection{Rich Composite \texttt{Artist}s}
-\texttt{Artist}s are the ``middle layer'' of Matplotlib that we use to
-encode user-intent and ``draw'' themselves when displaying a figure to
-the screen or saving to disk.  These are the objects that users
-interact with to update the plotted data for interactive figures,
-streaming data, and generating animations.  There is currently a mix
-of ``primitive'' \texttt{Artist}s, for things like lines, images, and
-patches, and ``composite'' artists for things like the whole
-\texttt{Figure} or the \texttt{Axes}.  However, there is a gap in the
-middle where we use a number of unconnected \textttt{Artist} instance
-to represent multi-component plots.  For example, \texttt{errorbar}
-creates up to 5 independent \textttt{Artist}s, if the user wants to
-update the plot they must touch all 5 objects in turn.  Instead, we
-should be providing the user with a single object on which they can
-interact with to update all of the underlying \texttt{Artist}s.
 
-- mention events / picking / user interaction
+\texttt{Artist}s are the ``middle layer'' of Matplotlib that we use to
+encode user-intent and data which can ``draw'' themselves when
+displaying a figure to the screen or saving to disk.  These are the
+objects that users interact with to update the plotted data or style.
+Currently, Matplotlib has a mix of ``primitive'' \texttt{Artist}s (for
+things like lines, images, and patches) and ``composite'' artists for
+things like the whole \texttt{Figure}.  In some cases the mapping
+between the user API and the resulting \texttt{Artist}s is one-to-one,
+but in other cases one user call may generate many de-coupled
+\texttt{Artist}s, for example, \texttt{errorbar} creates up to 5
+independent \textttt{Artist}s.  If the user wants to update the plot
+they must touch all of the objects.  Instead, we should be providing
+the user with a single object on which they can interact with to elide
+the underlying details of how the \texttt{Artist} is rendered.  This
+will greatly simplify user code for interactive figures, streaming
+data, and animations.
+
 
 \subsubsection{API generalization}
-Currently Matplotlib has two main user-facing APIs:
-- pyplot vs OO
-- talk about making 3rd party feel like first-party
-- talk about multi-axes plotting routines
 
+Currently Matplotlib has two main user-facing APIs: the
+\texttt{pyplot} API and the \texttt{Object Oriented} (\texttt{OO})
+API.  The \texttt{pyplot} API closely follows MATLAB and, while
+convenient for quick interactive usage, it is built around the concept
+of a global ``current Figure'' and ``current Axes''.  This is
+problematic if used in down stream libraries by leading to surprising
+and frequently undesired coupling between different parts of the code.
+On the other hand the \texttt{OO} interface is more explicit and
+flexible but marginally more verbose.  However, the main name space
+for plotting methods is on the \texttt{Axes} object which leads to
+three issues with the API.  First because the plotting methods
+provided by Matplotlib are methods on one of our classes third party
+domain-specific packages can never feel ``First Class'' as they will
+not be implemented as \texttt{Axes} methods.  Second, there are some
+plots that should be easy that require putting \texttt{Artist}s on
+multiple \texttt{Axes} which is not something that can be naturally
+expressed as an \texttt{Axes} method.  Lastly, because all of the
+plotting methods (along with some additional \texttt{Axes} specific
+methods) are in a single name space, there are over 250 methods on the
+\texttt{Axes} class which makes it extremely hard to discover if the
+method you need exists.
+
+To address both of these issues we will move the main plotting name
+space from the \texttt{Axes} method to top-level functions that take in
+data, style, and \texttt{Axes}s.  This will allow ``first-party'' and
+``third-party'' plotting tools to be on a level playing field and
+makes it possible to cleanly write plotting tools that produce
+multiple \texttt{Artist}s across multiple \texttt{Axes}s.  These
+functions will return the rich composites discussed in the previous
+section.  Having all of the plotting functions, both first- and
+third-party, as top level functions allows for curated domain-specific
+name spaces.  This will greatly aid in the discoverabilty of relevant
+plotting functions by users.
 
 
 
 \subsubsection{Additional Export Methods}
 
-\begin{itemize}
-\item currently have 'draw' which takes in a canvas and render's itself
-\item add 'export' which will provide a high-level json-like (use to
-  implement non-pickle save/restore, export to {bokeh, plotly,
-    qtplotting})
-\item add a lower-level scene-graph like representation (suitable to push to a GPU?)
-\end{itemize}
+The primary way to export a Matplotlib figure is to save it in either
+as raster or vector file format.  From there it can then be opened in
+other applications, emended in papers or websites, or displayed to an
+interactive window.  However, there is currently no way good way to
+save and reopen a Matplotlib \texttt{Figure} or export it to another
+plotting library, such as \texttt{bokeh}, \texttt{d3} or
+\texttt{QtCharts}.  Additionally, due to the way Matplotlib internals
+are implemented, it is difficult to take advantage GPUs to accelerate
+drawing.
+
+To address these problems we will investigate adding two additional
+export paths.  One at a high-level, suitable for a Matplotlib-specific
+file format and interoperability with other high-level plotting
+libraries, and one at a low level scene-graph level, suitable to pass
+to a GPU.
 
 
 \subsection{Coordination with downstream projects}
 
 Much of the domain-specific specialization is carried in the semantics
-of the structured data, so even once core Matplotlib can handle structured
-data natively, there will still be a need for domain-specific tools.
-
-Downstream libraries can provide any or all of tuned user-facing
-functions, tuned artists, or a tuned data layer.
-
-We will have to engage with current down stream projects to make sure
-that our plans actually to make things easier for them.
-
-Develop tools / documentation / guidelines to easily spin-up a new
-downstream package.
-
-- sklearn
-- skimage
-- cellprofiler
-- nipy
-- scanpy
-- starfish
+of the structured data and the specific visualization needs of the
+domain.  The most common visualizations in a domain need to be one or
+two simple lines of code for the end-practitioners and the ``obvious''
+customization options need to be surfaced.  This means there will
+always be a need for domain specific visualization libraries.  All of
+the refactoring describe above is motivated to enable these libraries
+to be easily written and extended.  To this end we will engage with
+current down stream projects to make sure that our plans actually to
+make things easier for them and focus our prototyping efforts on their
+use cases.  In particular we plan to engage with
+\texttt{scikit-learn}\footnote{Also applying for Essential Open Source
+Software for Science}, \texttt{CellProfiler}\footnote{Currently funded
+by CZI\label{f:czi}}, \texttt{scanpy}\footref{f:czi},
+\texttt{starfish}\footref{f:czi}, \texttt{nipy}, and
+\texttt{scikit-image}\footref{f:czi}
 
 
 \subsection{Expected outcomes, success evaluation and metrics}
 \subsubsection{Issue and PR curation}
-- set targets
- - consistently have net negative month over month in both issues an PRs
- - new issues / PRs triaged with in 7 days of being opened
- - numpy has had success in this direction
- - ``healthy'' would be 20\% of where we are
- - full review of all open issues, assign action, priority, estimated difficulty
- -
 
- two types of labels
- - action labels
- - domain labels
- - difficulty labels
+Quantitatively evaluating maintenance work can be tricky, some Issues
+or PRs can take minutes to review where as others can take days to
+months of effort, however we believe that there is value at looking at
+the net number of new Issues and Pull requests.  We will reduce this
+number, ideally making it negative.  NumPy has had success in
+reversing the ever increasing trends in the number of Issues / Pull
+Requests via paid
+developers \footnote{https://github.com/seberg/numpy\_talk\_plots/blob/master/plots\_used\_in\_talk/issues\_prs\_delta.pdf}.
+
+
+We will also evaluate and label every open Issue and Pull Request
+determining: assigning an action, a priority, and an estimated
+difficulty.  Once that is done, we will aim to have all new Issues and
+Pull Requests labeled with in 7 days of being opened.
+
 
 \subsubsection{Architecture and down stream engagement}
-- white paper on new architecture
-- documented use-cases
-- prototypes
 
+For the Architecture work we plan to produce a white paper documenting
+the proposed design, document the use-cases that need to be supported,
+and develop prototypes of the end-to-end use targeting one or more of the
+life-science domains.
 
 
 \section{Work Plan}
@@ -281,8 +322,8 @@ The funds will be paid to:
   been a core-contributor Matplotlib for three years and has
   previously contributed support for string-categorical values.  Her
   work on the architecture of Matplotlib will be the basis of her PhD
-  thesis.  Aizenman will take the lead on new-contributor on-boarding
-  and the data model.
+  thesis.  Aizenman will take the lead on the data model design and
+  new-contributor on-boarding.
 \item Fund 12 months of a yet-to-be identified software engineer to
   support all aspects of the proposal.
 \item Travel to key Scientific and Python conferences (such as SciPy
