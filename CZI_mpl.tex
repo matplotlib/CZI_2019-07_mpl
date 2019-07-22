@@ -43,125 +43,127 @@ next 16 years:
   \item Developing a comprehensive plan to evolve the core architecture
     of Matplotlib.
   \item Developing the tools, documentation, and community to foster a
-    rich eco-system of domain specific plotting tools built on
+    rich eco-system of domain-specific plotting tools built on
     Matplotlib.
 \end{enumerate}
 
+
+% This matches the scikit-learn structure, but to my eye it doesn't
+% belong here at all.  This is not a goal, but we are in the goals
+% section.  This belongs in the work plan section.
 We propose to fund Thomas Caswell (PI) for 6 months, Hannah Aizenman
-for 12 months, and a yet-identified software engineer for 12 months to
+for 12 months, and a yet-unidentified software engineer for 12 months to
 work on these tasks.  Caswell is the lead developer of Matplotlib and
 an Associate Computational Scientist at Brookhaven National
-Laboratory.  Aizenman is a core-contributor to Matplotlib, who has
-previously worked on datatypes and outreach, and a PhD student in
+Laboratory.  Aizenman is a core contributor to Matplotlib, who has
+previously worked on datatypes and outreach; she is a PhD student in
 computer science studying visualization at The City College of New
 York.
 
 
+% The goal is the maintenance; curating is the method of achieving it.
+\subsection{Maintenance of the library}
 
-\subsection{Curating Pull Requests and Issues}
+New Issues and Pull Requests are being submitted faster than our
+volunteers can review them.
+Over the past few years we have merged PRs and closed
+issues at about about [X per month], but about [Y] new issues and PRs
+are opened monthly; currently we have about 1200 open issues and
+300 open PRs.  Among the latter are good contributions and bug fixes
+that, possibly with additional attention and polish, could improve
+matplotlib for direct users and downstream packages.  The backlog is
+discouraging for new or occasional contributors, and distracting for
+core developers.
 
-The rate at which new Issues and Pull Requests come into the project
-is out-pacing the rate at which volunteer effort can review them.
-Over the past few years we have continued to merge PRs and close
-issues about about [X per month], however new issues and PRs are opened
-at a rate of [Y per month] which has produced a significant backlog.
-This has resulted in useful contributions languishing in un-merged PRs
-and bugs that break downstream packages going un-addressed.  This has
-a deleterious effect on our community, discouraging new contributors,
-and making it challenging to develop new contributors to the level of
-familiarity with the code that they are able to review PRs. This leads
-to an obvious negative feedback loop, where the community does not
-grow in a healthy and sustainable manner.
-
-We propose to fund Caswell, Aizenman, and the SWE to curate the open
-issues and pull requests.  Specifically this work will involve:
+To maintain matplotlib's health we need to do the following:
 
 \begin{itemize}
-\item Sorting the current backlog of Issues and Pull Requests
-  them in terms of how importance and how difficultly.
-\item Ensuring that newly opened Issues are sorted and Pull Requests
+\item Sort the current backlog of Issues and Pull Requests
+  in terms of urgency and difficultly.
+\item Ensure that newly opened Issues are sorted and Pull Requests
   are reviewed in a timely manner.
-\item On-boarded new contributors to the project team.  This is
+\item On-board new contributors to the project team.  This is
   critical to sustaining and diversifying our developer community.
-\item Maintaining Backward compatibility as much as practical.  If we
-  do break API ensuring it is intentional and well documented.
-\item Managing group decisions about proposed enhancements and
-  features or breaking API.
+\item Maintain backward compatibility as much as practical.  If we
+  do break API, we must ensure it is intentional and well documented.
+\item Manage group decisions about proposed enhancements, features, and
+  breaking API changes.
 \end{itemize}
 
 None of this is to demote the importance of the volunteer
 contributors, but instead to better co-ordinate and nurture their
 efforts, with the goal of growing and sustaining a diverse community
-of expert contributors.  This community will continue to sustain the
-project in the future after this funding is exhausted.
+of expert contributors.
+% Realistically, don't we need *some* funding for paid work to
+% continue after this?  I don't think this is a one-shot cure-all.
 
 \subsection{Road-map and Architecture Design}
 
 The current
 architecture\footnote{https://www.aosabook.org/en/matplotlib.html} of
-Matplotlib was first designed 15 years ago \cite{Hunter:2007}.  That
-it is still in use is a testament to its initial design, however it
-does not reflect all of the developments in thinking around data
-structures, software design, and visualization of the past decade.
+Matplotlib was developed 15 years ago \cite{Hunter:2007}.  That
+it is still in use is a testament to its initial design; but that
+design does not reflect more recent developments in data
+structures, software design, and visualization.
 Matplotlib does not natively know how to exploit structured data
 (e.g. \texttt{pandas} or \texttt{xarray}) objects.  We will investigate
-how to update Matplotlib's internal data model to leverage the
+how to update Matplotlib's internal data model to use the
 information embedded in structured data.  While there are downstream
-domain specific libraries that are built on top of Matplotlib,
-interoperability between core Matplotlib and each other can be
-fraught.  We will develop plans of how to re-factor the core library
-to allow easy extension and smooth interoperability between the core
-library and mutually between the domain specific plotting tools.
+domain-specific libraries that are built on top of Matplotlib,
+interoperability is problematic.  We will develop plans for
+refactoring the core library to facilitate its
+extension and to smooth interoperability among the core
+library and the various domain-specific plotting tools.
 
 We will develop clear requirement documents, document critical use
 cases, implement prototypes, and engage with downstream users to
-ensure that both the data model and API overhauls enable domain
-specific plotting tools to be easily built on top of Matplotlib.
+ensure that both the data model and API overhauls enable domain-specific
+plotting tools to be easily built on top of Matplotlib.
 
 
 \subsubsection{Data Model}
 
 ``Structured data'' combines one or more arrays into an object that
-also contains labels, dimensions, and co-ordinates of the data (i.e. a
+also contains labels, dimensions, and co-ordinates of the data (e.g., a
 map of global surface temperatures containing \texttt{T} ,
 \texttt{latitude} and \texttt{longitude} being packed together in an
-object along with all the relevant meta data).  In addition to the
-data itself, these objects also carry information about the
+object along with all the relevant metadata).  In addition to the
+data itself, these objects carry information about the
 relationship, implicitly or explicitly, between the components.
 Currently Matplotlib asks the users or downstream libraries to split
 this information into its components and pass them individually to
-plotting methods, losing the structure and relation ships.
+plotting methods, losing the structure and relationships.
 Internally, each plotting method (and \texttt{Artist}s, the objects
-used to represent the plots) each handle sanitizing and storing user
+used to represent the plot elements) each handle sanitizing and storing user
 input independently.  This means that some common functionality, such
-as handling data with attached units (i.e. degrees Celsius) and the
-data is in a structure we can work with, is scattered through out the
-code base.  This leads to inconsistencies in the behavior across the
+as handling data with attached units (e.g., degrees Celsius), is scattered
+throughout the
+code base.  This leads to inconsistencies in behavior across the
 library and makes it difficult to write code that updates the user
-data, critical for interactive exploration, streaming, and animation
+data, as is required for interactive exploration, streaming, and animation
 use cases.
 
 
 Here we propose to put significant effort into re-designing the
-internal data model for Matplotlib and implementing a prototype.  The
+internal data model for Matplotlib, with a prototype implemention. The
 goal is to have a simple model appropriate for the base Matplotlib
 library and, more importantly, to have the technical underpinning in
-place that will allow domain-specific downstream libraries be able to
-handle structured and updating data in a coherent fashion.  By
+place that will allow domain-specific downstream libraries to
+handle and update structured data in a coherent fashion.  By
 removing the direct data storage from the \texttt{Artist}s and
-defining an API for data objects we will make easy to:
+defining an API for data objects we will make it easy to:
 \begin{itemize}
   \item implement smart down sampling of plotted data based on view
-    limits
-  \item seamlessly handling updating the underlying data, either
-    streaming or interactively
-  \item backing the plot with non-numpy arrays, including queries to a
-    database
+    limits;
+  \item seamlessly update the underlying data, either
+    streaming or interactively;
+  \item and back the plot with non-numpy arrays, including queries to a
+    database.
 \end{itemize}
-By defining a clear API to access data we will be able to de-couple
-the development of the data access and the \texttt{Artist}s.  This
+By defining a clear API to access data we will be able to decouple
+the development of the data access from the \texttt{Artist}s.  This
 will enable implementations of the data layer that have exotic
-dependencies to be used with \texttt{Artist}s from the core library or
+dependencies to be used with \texttt{Artist}s from the core library, and
 third-party \texttt{Artist}s to rely on the data layer from the core
 library.
 
@@ -170,18 +172,15 @@ library.
 The library has grown organically over time through the contributions
 of many people (approximately 900 individuals) and the code has
 accumulated many small inconsistencies in the API.  Similar methods
-have different argument order, \texttt{ax.text(x, y, s)} vs
-\texttt{ax.annotation(s, (x, y))} and spelling/pluralization of
-argument names, \texttt{color} vs \texttt{colors} through out the
-library.  These subtle issues add friction for users, but are not easy
-to fix.  The biggest problem to harmonizing our APIs and getting to
-``one obvious way to do things'' is that due to our large user base
-any API changes can have major negative impacts.  To bring all of the
-APIs into harmony requires knowing what \textbf{all} of the APIs are
-which requires dedicated effort.  We will have to carefully consider
-what APIs to leave as they are, which to deprecate, and which to
+have different argument order, e.g., \texttt{ax.text(x, y, s)} vs
+\texttt{ax.annotation(s, (x, y))}, and some keyword arguments can be
+singular or plural, e.g., \texttt{color} vs \texttt{colors}.  These
+subtle issues add friction for users, but are hard to fix without
+breaking existing code somewhere in our large user base.
+Our goal is to minimize breakage.  Taking into account
+\textbf{all} of the APIs, we will have to carefully consider
+which to leave as they are, which to deprecate, and which to
 replace.
-
 
 
 \subsubsection{Rich Composite \texttt{Artist}s}
@@ -196,7 +195,7 @@ things like the whole \texttt{Figure}.  In some cases the mapping
 between the user API and the resulting \texttt{Artist}s is one-to-one,
 but in other cases one user call may generate many de-coupled
 \texttt{Artist}s, for example, \texttt{errorbar} creates up to 5
-independent \textttt{Artist}s.  If the user wants to update the plot
+independent \texttt{Artist}s.  If the user wants to update the plot
 they must touch all of the objects.  Instead, we should be providing
 the user with a single object on which they can interact with to elide
 the underlying details of how the \texttt{Artist} is rendered.  This
