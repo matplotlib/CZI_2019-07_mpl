@@ -25,7 +25,9 @@ graphs of the domain.
 By most measures Matplotlib is a wildly successful project; the source
 has been actively developed and maintained by a vibrant, primarily
 volunteer, community over the last 16 years and, conservatively, has
-over a million users across the wide spectrum of fields, including
+over a million users\footnote{Estimated from pypi download numbers,
+conda download numbers, and the number of unique monthly visitors to
+the documentation website} across a wide spectrum of fields, including
 bio-medical imaging, microscopy, and genomics
 \cite{Carpenter2006,Wolf2018,10.7717/peerj.453}
 \cite{Segata2011,10.1371/journal.pgen.1000695,HASHIMSHONY2012666,
@@ -59,7 +61,7 @@ Over the past few years we have merged PRs and closed
 issues at about about [X per month], but about [Y] new issues and PRs
 are opened monthly; currently we have about 1200 open issues and
 300 open PRs.
-Among the latter are good contributions and bug fixes
+Among the latter are useful contributions and bug fixes
 that, possibly with additional attention and polish, could improve
 Matplotlib for direct users and downstream packages.
 The backlog is
@@ -180,23 +182,23 @@ the consequences
 
 \texttt{Artist}s are the ``middle layer'' of Matplotlib that encode
 user-intent, style, and data.  An \texttt{Artist} can ``draw'' its
-self when \texttt{Figure} is rendered to screen or disk.
-To update the style or data users interact with the  \texttt{Artist}s.
+self when \texttt{Figure} is rendered to screen or disk.  To update
+the style or data users interact with the \texttt{Artist}s.
 Currently, Matplotlib has a mix of ``primitive'' \texttt{Artist}s (for
 things like lines, images, and patches) and ``composite'' artists for
-things like the whole \texttt{Figure}.
-In some cases the mapping between the user API and the resulting
-\texttt{Artist}s is one-to-one, but in other cases one user call may
-generate many decoupled \texttt{Artist}s, for example,
-\texttt{errorbar} creates up to 5 independent \texttt{Artist}s or
-\texttt{hist} which returns many independent \texttt{Artist}s.  In either
-case, if the user wants to update the plot they must touch all of the
-\texttt{Artists} in a carefully coordinated way.
-We should be providing the user with a single object on which
-they can interact with to elide the underlying details of how the
-\texttt{Artist} is rendered.
-This will simplify user code for interactive data exploration,
-handling streaming data, and generating animations.
+things like the whole \texttt{Figure}.  In some cases the mapping
+between the user API and the resulting \texttt{Artist}s is one-to-one,
+but in other cases one user call may generate many decoupled
+\texttt{Artist}s, for example, \texttt{errorbar} creates up to 5
+independent \texttt{Artist}s (the line connecting the points, the
+error bars, the error bar caps, etc) or \texttt{hist} which returns
+many independent \texttt{Artist}s.  In either case, if the user wants
+to update the plot they must touch all of the \texttt{Artists} in a
+carefully coordinated way.  We should be providing the user with a
+single object on which they can interact with to elide the underlying
+details of how the \texttt{Artist} is rendered.  This will simplify
+user code for interactive data exploration, handling streaming data,
+and generating animations.
 
 
 
@@ -296,16 +298,16 @@ Quantitatively evaluating maintenance work can be tricky, some Issues
 or PRs can take minutes to review where as others can take days to
 months of effort, however we believe that there is value at looking at
 the net number of new Issues and Pull requests.  We will reduce this
-number, ideally making it negative.  NumPy has had success in
-reversing the ever increasing trends in the number of Issues / Pull
-Requests with paid
+number, ideally closing Issues and Pull Requests faster than they are
+opened.  NumPy has had success in reversing the ever increasing trends
+in the number of Issues / Pull Requests with paid
 developers \footnote{https://github.com/seberg/numpy\_talk\_plots/blob/master/plots\_used\_in\_talk/issues\_prs\_delta.pdf}.
 
 
 We will evaluate and label every open Issue and Pull Request
 determining: assigning an action, a priority, and an estimated
 difficulty.  Once that is done, we will aim to have all new Issues and
-Pull Requests labeled with in 7 days of being opened.
+Pull Requests labeled within 7 days of being opened.
 
 
 \subsection{Road-map and Architecture}
