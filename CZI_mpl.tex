@@ -18,7 +18,7 @@
 
 Matplotlib (\url{http://matplotlib.org}) is the fundamental data
 visualization library for the scientific Python stack of tools,
-providing a visual interface used by over a million\footnote{Estimated
+providing plotting functionality used by over a million\footnote{Estimated
 from \texttt{pypi} download numbers, \texttt{conda} download numbers,
 and the number of unique monthly visitors to the documentation
 website} scientists in conjunction with other foundational tools like
@@ -31,7 +31,7 @@ microscopy, and genomics
   10.3389/fninf.2014.00014}, and we expect the user base to continue
 to grow as Python is adopted by more scientists in the life
 sciences. There are many downstream packages that build on Matplotlib
-to implement domian-specific plotting tools.
+to implement domain-specific plotting tools.
 
 The source has been actively developed and maintained by a vibrant,
 primarily volunteer, community over the last 16 years.  However, given
@@ -39,8 +39,8 @@ the scale, scope, and importance of the project, we are at the limit
 of what can be developed and maintained with a primarily volunteer
 effort.
 
-This proposal supports 2.4 person years of developer support for
-Matplotlib, support that is crucial to set the groundwork and shepherd
+This proposal supports 2.4 person years of developer time for
+Matplotlib, laying the groundwork for guiding
 the project through the next 16 years:
 
 \begin{enumerate}[label=\alph*),noitemsep]
@@ -63,9 +63,9 @@ the project through the next 16 years:
 % enough.  Thats why I was suggesting curation and community-building
 % as a way to express the same thing.
 
-Matplotlib is a community driven project, however we are large enough
-that we need supported developers who have the time organize, plan and
-make timely decisions.  Currently, New Issues and Pull Requests are
+Matplotlib is a community-driven project, but we have grown to the point
+where we need supported developers with the time to organize, plan, and
+make timely decisions.  Currently, new Issues and Pull Requests are
 being submitted faster than our volunteers can review them.  Over the
 past few years we have merged PRs and closed Issues at about [X per
   month], but about [Y] new issues and PRs are opened monthly;
@@ -79,11 +79,11 @@ To maintain Matplotlib's health we need to do the following:
 
 \begin{itemize}[noitemsep]
 \item Curate the current backlog of Issues and Pull Requests
-  in terms of topic, difficultly, and urgency.
+  in terms of topic, difficulty, and urgency.
 \item Label and review newly opened Issues and Pull Requests
   promptly.
 \item Fix critical bugs and regressions promptly.
-\item On-board new contributors to the project team; critical to
+\item On-board new contributors to the project team; this is critical to
   sustaining and diversifying our developer community.
   % AL had concerns about this being an agressive growth target, I think
   % of this more in terms of making sure we are bring people on to offset
@@ -94,19 +94,23 @@ To maintain Matplotlib's health we need to do the following:
   breaking API changes.
 \end{itemize}
 
-None of this is to demote the importance of the volunteer
-contributors, but instead to better co-ordinate and nurture their
+The requested support for developers is intended to complement and
+faciliate, not replace, the crucial work by volunteers.  We aim to
+better co-ordinate and nurture their
 efforts, with the goal of growing and sustaining a diverse community
-of expert contributors, both volunteer and paid.
+of expert contributors, both volunteer and paid.  We view
+this proposal as the start of a new phase for Matplotlib, in which we
+will need to find support from a variety of sources in the coming years.
 % Realistically, don't we need *some* funding for paid work to
 % continue after this?  I don't think this is a one-shot cure-all.
 % Agree, this is at best a jump start / down payment on future funding
 
-% We actually need to say what Matplotlib *is* somewhere, w/ a link to our webpage, otherwise
+% Cite Ipython, Jupyter, Numpy as our models or inspiration in this?
+
 
 \subsection{Road-map and Architecture}
 
-Matplotlib needs sustained attention to map out the library's
+Matplotlib needs sustained attention to design the library's
 architecture for the next decade.  The current
 architecture\footnote{https://www.aosabook.org/en/matplotlib.html} of
 Matplotlib was developed 15 years ago \cite{Hunter:2007}.  That it is
@@ -114,9 +118,9 @@ still in use is a testament to its initial design; but that design
 does not reflect recent developments in data structures, software
 design, and visualization.  Matplotlib does not natively know how to
 exploit structured (e.g. \texttt{pandas} or \texttt{xarray}) or
-streaming data.  Some of the design choices about how to store user
-data internally and where the main plotting name space lives are
-starting to be constrains as Matplotlib scales to more domains.  While
+streaming data.  Some of the design choices about data structures and
+name space organization are
+becoming unwelcome constraints as Matplotlib scales to more domains.  While
 there are many downstream domain-specific libraries that are built on
 top of Matplotlib, interoperability between them is problematic.
 
@@ -131,7 +135,7 @@ top of Matplotlib, interoperability between them is problematic.
 \subsubsection{Homogenization of the Application Programming Interface (API)}
 \label{sec:api_hom}
 The library has grown organically over time through the contributions
-of many people (approx. 900 individuals) and the code has accumulated
+of many people (approx. 900 individuals), and the code has accumulated
 many small inconsistencies in the API.  Similar methods have different
 argument order, e.g., \texttt{ax.text(x, y, s)} vs
 \texttt{ax.annotation(s, (x, y))}, and some keyword arguments can be
@@ -150,31 +154,37 @@ API.  The \texttt{pyplot} API closely follows MATLAB and is built
 around the concept of a global ``current Axes''.  While convenient for
 quick interactive usage, it frequently produces surprising and
 undesired coupling between in the code when used in libraries.  On the
+% Something is missing in the line above, but I don't know what it is...
 other hand the \texttt{OO} interface is more explicit and flexible but
-more verbose.  However, the main name space for plotting methods is on
-the \texttt{Axes} object which leads to three issues with the API.
+more verbose.  The main name space for plotting methods is
+the \texttt{Axes} class, which leads to three issues with the API.
 First, third party domain-specific packages can never feel ``First
-Class'' as they will not be implemented as \texttt{Axes} methods like
+Class'', as their plotting functions will not be implemented as \texttt{Axes} methods like
 the ``built in'' plots.  Second, some visualizations require putting
-\texttt{Artist}s on multiple \texttt{Axes} which can not be naturally
-expressed as an \texttt{Axes} method.  Lastly, there are over 250
-methods on the \texttt{Axes}, all of the plotting methods and some
-additional \texttt{Axes} specific methods, which makes it extremely
-hard to discover if the method you need exists via tab-completion.
+\texttt{Artist}s on multiple \texttt{Axes}; this doesn't fit the model
+in which Artists are made via \texttt{Axes} methods.  Lastly, there are over 250
+methods on the \texttt{Axes}---all of the plotting methods and some
+additional \texttt{Axes} specific methods---which makes it extremely
+hard to use tab-completion to search for a method.
 
-To address these issues we will move to top-level functions that take
-in data, style, and \texttt{Axes}s as the primary API.  During this
+To address these issues we will move to a primary API in which top-level
+functions take
+in data, style, and \texttt{Axes}s.  During this
 refactoring we will use consistent naming and call conventions, as
 discussed in \ref{sec:api_hom}, that can be used by downstream
 libraries.  These functions will return the rich composites discussed
 in section \ref{sec:artists} and consume the data objects discussed in
 section \ref{sec:dm}.  From the large pool of plotting functions we
 will curate domain-specific name spaces, which can be augmented by
-down stream libraries to enable users to discover the functionality
+downstream libraries to enable users to discover the functionality
 they need.
 
 This is a huge change in the API that will require time to carefully
 consider the consequences.
+% Does this mean it the consequences might be so bad that it won't be
+% pursued?  My point is that the sentence is true--but its role in the
+% proposal is unclear to me.  I'm not sure it is what you really want
+% to say here.
 
 
 
@@ -182,24 +192,25 @@ consider the consequences.
 \label{sec:artists}
 \texttt{Artist}s are the ``middle layer'' of Matplotlib that encode
 user-intent, style, and data.
-To update the style or data users interact with the \texttt{Artist}s
-objects and \texttt{Artist}s know how to turn the user's input into
+To update the style or data users interact with the \texttt{Artist}
+objects, and \texttt{Artist}s know how to turn the user's input into
 colored pixels.
 %too glib?
 Currently, Matplotlib has a mix of ``primitive'' \texttt{Artist}s
-(e.g. lines, images, and text) and ``composite'' artists (e.g.
+(e.g. lines, images, and text) and ``composite'' artists (e.g.,
 the whole \texttt{Figure}).
 
 The mapping between the user API and the \texttt{Artist}s can be
 one-to-one, but often one user call will generate many decoupled
-\texttt{Artist}s.  For example \texttt{hist} displays a histogram, but
+\texttt{Artist}s.  For example, \texttt{hist} displays a histogram, but
 returns a list of independent \texttt{Rectangle} \texttt{Artist}s (one
 per bin).  If the user wants to update the data or the style, they
 must adjust each \texttt{Rectangle} independently.  Instead, we will
 have a single object that can have its data and style updated to
 simplify user code for interactive data exploration, consuming
 streaming data, and generating animations.
-
+% This still needs work.  Maybe the point is that composite artists
+% will be smarter, more widely used, and more uniform in their interface?
 
 
 \subsubsection{Data Model}
