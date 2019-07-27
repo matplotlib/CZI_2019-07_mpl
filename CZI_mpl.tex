@@ -16,30 +16,26 @@
 
 \section{Goals}
 
-The purpose of this proposal is to reduce the backlog of currently
-open Issues and Pull Requests, plan Matplotlib's evolution to meet the
-visualization challenges of the coming decade and to enable domain
-specific libraries plotting libraries tuned to the exact data and
-graphs of the domain.
+% we need this somewhere: You never actually say what matplotlib is. 
 
-By most measures Matplotlib is a wildly successful project; the source
-has been actively developed and maintained by a vibrant, primarily
-volunteer, community over the last 16 years and, conservatively, has
-over a million users\footnote{Estimated from pypi download numbers,
-conda download numbers, and the number of unique monthly visitors to
-the documentation website} across a wide spectrum of fields, including
+Matplotlib (\url{http://matplotlib.org}) is the fundamental data visualization library for the scientific Python stack of tools, providing a visual interface used by over a million\footnote{Estimated from \texttt{pypi} download numbers,
+\texttt{conda} download numbers, and the number of unique monthly visitors to
+the documentation website}  data scientists in conjunction with other foundational tools like Numpy and SciPy (\url{https://www.scipy.org/about.html}).  It is used across a wide spectrum of fields, including
 bio-medical imaging, microscopy, and genomics
 \cite{Carpenter2006,Wolf2018,10.7717/peerj.453}
 \cite{Segata2011,10.1371/journal.pgen.1000695,HASHIMSHONY2012666,
   10.1093/bioinformatics/bts480,Carlile2014,Laganowsky2014,Jiangaac9462,
-  10.3389/fninf.2014.00014}.  We expect the user base to continue to
-grow as Python is adopted by more scientists in the life sciences.
+  10.3389/fninf.2014.00014}, and we expect the user base to continue to
+grow as Python is adopted by more scientists in the life sciences. It has a large array of downstream packages that implement domian-specific plotting solutions.
+
+The source
+has been actively developed and maintained by a vibrant, primarily
+volunteer, community over the last 16 years.
 However, given the scale, scope, and importance of the project, we are
-at the limit of what can be developed and maintained with primarily
-volunteer effort.  This proposal identifies three key areas where we
-need sustained support to ensure the health of the platform and
-provide the leadership to meet the visualization challenges of the
-next 16 years:
+at the limit of what can be developed and maintained with a primarily
+volunteer effort.  
+
+This proposal supports 2.5 person years of developer support for Matplotlib, support that is crucial to set the groundwork and shepherd the project through the next 16 years:
 
 \begin{enumerate}[label=\alph*),noitemsep]
   \item Maintenance of the library, including curating new and
@@ -55,8 +51,11 @@ next 16 years:
 % The goal is the maintenance; curating is the method of achieving it.
 \subsection{Maintenance of the library}
 
-New Issues and Pull Requests are being submitted faster than our
-volunteers can review them.
+% JMK Try to start paragraphs with what you will do, and then defend why it is necessary
+% JMK I'm pretty skeptical that CZI will find closing issues sexy enough.  Thats why I was suggesting curation and community-building as a way to express the same thing. 
+
+Matplotlib depends on a vibrant developer community, but is large enough that this requires organization and planning of lead developers with enough time to ensure timely decision making.  Currently, New Issues and Pull Requests are being submitted faster than our
+volunteers can review them. 
 Over the past few years we have merged PRs and closed
 issues at about about [X per month], but about [Y] new issues and PRs
 are opened monthly; currently we have about 1200 open issues and
@@ -92,9 +91,11 @@ of expert contributors.
 % continue after this?  I don't think this is a one-shot cure-all.
 % Agree, this is at best a jump start / down payment on future funding
 
+% We actually need to say what Matplotlib *is* somewhere, w/ a link to our webpage, otherwise 
+
 \subsection{Road-map and Architecture }
 
-The current
+Matplotlib needs sustained attention to map out the library's architecture for the next decade.  The current
 architecture\footnote{https://www.aosabook.org/en/matplotlib.html} of
 Matplotlib was developed 15 years ago \cite{Hunter:2007}.  That it is
 still in use is a testament to its initial design; but that design
@@ -115,7 +116,7 @@ top of Matplotlib, interoperability between them is problematic.
 %% internal data model to use the information embedded in structured
 %% data and allow fluid updating.
 
-\subsubsection{Homogenization of the API}
+\subsubsection{Homogenization of the Application Programming Interface (API)}
 
 The library has grown organically over time through the contributions
 of many people (approx. 900 individuals) and the code has accumulated
@@ -141,7 +142,7 @@ convenient for quick interactive usage, this is
 problematic if used in down stream libraries and frequently leads to surprising
 and undesired coupling between different parts of the code.
 On the other hand the \texttt{OO} interface is more explicit and
-flexible but marginally more verbose.
+flexible but more verbose.
   However, the main name space
 for plotting methods is on the \texttt{Axes} object which leads to
 three issues with the API.
@@ -174,9 +175,8 @@ functions will return the rich composites discussed in the next
 section.
 Having all of the plotting functions, both first- and third-party, as
 top level functions allows for curated domain-specific name spaces,
-which will aid in the discoverabilty plotting functions by users.
-This is a big change in the API and we will need to carefully consider
-the consequences
+which will aid in the discoverabilty of plotting functions by users.
+This is a big change in the API that will require time to carefully consider the consequences. 
 
 \subsubsection{Rich Composite \texttt{Artist}s}
 
