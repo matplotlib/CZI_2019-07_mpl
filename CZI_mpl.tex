@@ -18,32 +18,32 @@
 \section{Goals}
 
 Matplotlib\footnote{\url{http://matplotlib.org}} is the fundamental
-data visualization library for the scientific Python stack of tools,
-providing plotting functionality used by over a
-million\footnote{Estimated from \texttt{pypi} download numbers,
-\texttt{conda} download numbers, and the number of unique monthly
-visitors to the documentation website} scientists in conjunction with
-other foundational tools like Numpy and
-SciPy\footnote{\url{https://www.scipy.org/about.html}}.  It is used
-across a wide spectrum of fields, including bio-medical imaging,
+data visualization library for the scientific Python ecosystem, used
+by over a million\footnote{Estimated from \texttt{pypi} download
+numbers, \texttt{conda} download numbers, and the number of unique
+monthly visitors to the documentation website} users in conjunction
+with other foundational tools like Numpy and
+SciPy\footnote{\url{https://www.scipy.org/about.html}}.  Matplotlib is
+used across a wide spectrum of fields, including bio-medical imaging,
 microscopy, and genomics
 \cite{Carpenter2006,Wolf2018,10.7717/peerj.453,
   Segata2011,10.1371/journal.pgen.1000695,HASHIMSHONY2012666,
   10.1093/bioinformatics/bts480,Carlile2014,Laganowsky2014,Jiangaac9462,
-  10.3389/fninf.2014.00014}, and we expect the user base to continue
-to grow as Python is adopted by more scientists in the life
-sciences. There are many downstream packages that build on Matplotlib
-to implement domain-specific plotting tools.
+  10.3389/fninf.2014.00014}, and we expect this user base to continue
+to grow as Python is further adopted in the life sciences.
+% remove this sentence all together?
+There are
+many downstream packages that build on Matplotlib to implement
+domain-specific plotting tools.
 
 Matplotlib has been actively developed and maintained by a vibrant,
 primarily volunteer, community over the last 16 years.  However, given
 the scale, scope, and importance of the project, we are at the limit
-of what can be developed and maintained with a primarily volunteer
-effort.
+of what we can sustainable maintain and develop with primarily
+volunteer effort.
 
-This proposal supports 2.4 person years of developer time for
-Matplotlib, laying the groundwork for guiding
-the project through the next 16 years:
+This proposal asks for 2.4 person years of developer effort for
+Matplotlib, laying the groundwork for the next 16 years by supporting:
 
 \begin{enumerate}[label=\alph*),noitemsep]
   \item Maintenance of the library, including curating new and
@@ -65,19 +65,20 @@ the project through the next 16 years:
 % enough.  Thats why I was suggesting curation and community-building
 % as a way to express the same thing.
 
-Matplotlib is a community-driven project, but we have grown to the point
-where we need supported developers with the time to organize, plan, and
-make timely decisions.  Currently, new Issues and PRs are
+Matplotlib is a community-driven project, but we have grown to the
+point where we need supported developers with the time to organize,
+plan, and make timely decisions.  Currently, new Issues and PRs are
 being submitted faster than our volunteers can review them.  Over the
 past few years we have merged PRs and closed Issues at about [X per
   month], but about [Y] new issues and PRs are opened monthly;
 currently we have about 1200 open issues and 300 open PRs.  Among the
-latter are useful contributions and bug fixes that, possibly with
-additional attention and polish, could improve Matplotlib for direct
-users and downstream packages.  The backlog is discouraging for new or
-occasional contributors, and distracting for core developers.
+former there may be critical bug reports or insightful feature
+requests and among the latter are useful contributions or bug fixes
+that would improve Matplotlib for direct users and downstream
+packages.  The backlog is discouraging for new or occasional
+contributors, and distracting for core developers.
 
-To maintain Matplotlib's health we need to do the following:
+To maintain Matplotlib's health we need to:
 
 \begin{itemize}[noitemsep]
 \item Curate the current backlog of Issues and PRs
@@ -99,7 +100,7 @@ To maintain Matplotlib's health we need to do the following:
 \end{itemize}
 
 The requested support for developers is intended to complement and
-faciliate, not replace, the crucial work by volunteers.  We aim to
+facilitate, not replace, the crucial work by volunteers.  We aim to
 better co-ordinate and nurture their
 efforts, with the goal of growing and sustaining a diverse community
 of expert contributors, both volunteer and paid.  We view
@@ -138,6 +139,7 @@ top of Matplotlib, interoperability between them is problematic.
 
 \subsubsection{Homogenization of the Application Programming Interface (API)}
 \label{sec:api_hom}
+% should we merge this into the next section?
 The library has grown organically over time through the contributions
 of many people (approx. 900 individuals), and the code has accumulated
 many small inconsistencies in the API.  Similar methods have different
@@ -155,36 +157,45 @@ they are, which to deprecate, and which to replace.
 Currently Matplotlib has two main user-facing APIs: the
 \texttt{pyplot} API and the \texttt{Object Oriented} (\texttt{OO})
 API.  The \texttt{pyplot} API closely follows MATLAB and is built
-around the concept of a global ``current Axes''.  While convenient for
-quick interactive usage, it frequently produces surprising and
-undesired coupling between in the code when used in libraries.  On the
+around the concept of a global ``current Axes''.
+While the
+\texttt{pyplot} API is convenient for interactive usage, the global
+state frequently produces surprising and undesired coupling when used
+in libraries.
 % Something is missing in the line above, but I don't know what it is...
-other hand the \texttt{OO} interface is more explicit and flexible but
-more verbose.  The main name space for plotting methods is
-the \texttt{Axes} class, which leads to three issues with the API.
+On the other hand the \texttt{OO} interface is more flexible and
+explicit but more verbose.
+The main name space for plotting methods in the \texttt{OO} API is
+methods on the \texttt{Axes} class, which leads to three issues with
+the API.
 First, third party domain-specific packages can never feel ``First
-Class'', as their plotting functions will not be implemented as \texttt{Axes} methods like
-the ``built in'' plots.  Second, some visualizations require putting
-\texttt{Artist}s on multiple \texttt{Axes}; this doesn't fit the model
-in which Artists are made via \texttt{Axes} methods.  Lastly, there are over 250
-methods on the \texttt{Axes}---all of the plotting methods and some
-additional \texttt{Axes} specific methods---which makes it extremely
-hard to use tab-completion to search for a method.
+Class'', as their plotting functions will not be implemented as
+\texttt{Axes} methods like the ``built in'' ones.
+Second, some visualizations require putting \texttt{Artist}s on
+multiple \texttt{Axes}; this doesn't fit the model in which Artists
+are made via \texttt{Axes} methods.
+Lastly, there are over 250 methods on the \texttt{Axes}---all of the
+plotting methods and some additional \texttt{Axes} specific
+methods---which makes it extremely hard to use tab-completion to
+search for a method.
 
-To address these issues we will move to a primary API in which top-level
-functions take
-in data, style, and \texttt{Axes}s.  During this
-refactoring we will use consistent naming and call conventions, as
-discussed in \ref{sec:api_hom}, that can be used by downstream
-libraries.  These functions will return the rich composites discussed
-in section \ref{sec:artists} and consume the data objects discussed in
-section \ref{sec:dm}.  From the large pool of plotting functions we
-will curate domain-specific name spaces, which can be augmented by
+To address these issues we will move to a primary API in which
+top-level functions take in data, style, and \texttt{Axes}(s).  During
+this refactoring we will use consistent naming and call conventions,
+as discussed in \ref{sec:api_hom}.
+These functions will return the rich composites discussed in section
+\ref{sec:artists} and consume the data objects discussed in section
+\ref{sec:dm}.  From the large pool of plotting functions we will
+curate domain-specific name spaces, which can be augmented by
 downstream libraries to enable users to discover the functionality
 they need.
 
-This is a huge change in the API that will require time to carefully
-consider the consequences.
+This large-scale refactoring requires dedicated developer
+time to carefully consider the consequences and trade offs.
+
+% This is a huge change in the API that will require time to carefully
+% consider the consequences.
+% --
 % Does this mean it the consequences might be so bad that it won't be
 % pursued?  My point is that the sentence is true--but its role in the
 % proposal is unclear to me.  I'm not sure it is what you really want
@@ -197,21 +208,20 @@ consider the consequences.
 \texttt{Artist}s are the ``middle layer'' of Matplotlib that encode
 user-intent, style, and data.
 To update the style or data users interact with the \texttt{Artist}
-objects, and \texttt{Artist}s know how to turn the user's input into
-colored pixels.
-%too glib?
+objects, and \texttt{Artist}s know how to
+translate that intent on to the rendered image.
+
 Currently, Matplotlib has a mix of ``primitive'' \texttt{Artist}s
 (e.g. lines, images, and text) and ``composite'' artists (e.g.,
 the whole \texttt{Figure}).
-
 The mapping between the user API and the \texttt{Artist}s can be
-one-to-one, but often one user call will generate many decoupled
+one-to-one, but often one user call will generate many
 \texttt{Artist}s.  For example, \texttt{hist} displays a histogram,
 but returns a list of independent \texttt{Rectangle} \texttt{Artist}s
 (one per bin).  If the user wants to update the data or the style,
 they must adjust each \texttt{Rectangle} independently.  While
 technically possible, this makes developing interactive figures and
-animations is significantly harder than it should be.  Instead, the
+animations is significantly harder than it should be.  The
 functions discussed in \ref{sec:api_gen} should return objects that
 have a uniform interface to update their data and style to make
 interactive visualization development accessible to all users.
@@ -224,21 +234,17 @@ interactive visualization development accessible to all users.
 \label{sec:dm}
 
 ``Structured data'' combines multiple pieces of, possibly
-heterogeneous, data along with labels, metadata, and the the
-relationship between the components into single data structure is
-not natively supported by Matplotlib.
- Currently users must split the structures up and pass the
-components individually into
-plotting methods, destroying the structure.
-
-
+heterogeneous, data along with labels and metadata into single data
+structure.  Structured data is is not natively supported by
+Matplotlib, users must split the structures up and pass the components
+individually into plotting methods, destroying the structure.
 Further, each plotting method and \texttt{Artist}s handle sanitizing
-and storing data independently.  This means that some common
-functionality, such as handling data with attached units (e.g.,
-degrees Celsius, dates), is scattered throughout the code base.  This
-leads to inconsistencies across library and makes it difficult to
-write code that updates the data or style for interactive exploration,
-streaming, and animation use cases.
+and storing data independently.  Common functionality, such as
+handling data with attached units (e.g., degrees Celsius, dates), is
+scattered throughout the code base and each \texttt{Artist} stores its
+data slightly differently.  This leads to inconsistencies across
+library and makes it difficult to uniformly update the data or style
+for interactive exploration, streaming, and animation use cases.
 
 
 We will re-organize the internal data representation in Matplotlib to
