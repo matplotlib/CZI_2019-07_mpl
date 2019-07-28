@@ -118,10 +118,10 @@ of Matplotlib was developed 15 years ago \cite{Hunter:2007}.  That it
 is still in use is a testament to its initial design; but that design
 does not reflect recent developments in data structures, software
 design, and visualization.  Matplotlib does not natively know how to
-exploit structured (e.g. \texttt{pandas} or \texttt{xarray}) or
-streaming data and some of the design choices about data structures and
-name space organization are becoming constraints as
-Matplotlib is adopted by more domains.
+exploit structured (e.g. \texttt{pandas} or \texttt{xarray}) and some
+of the design choices about data structures and name space
+organization are becoming constraints as Matplotlib is adopted by more
+domains.
 
 %% We will develop
 %% plans for refactoring the core library to facilitate its extension and
@@ -237,8 +237,7 @@ units (e.g., degrees Celsius, dates), is scattered throughout the code
 base.
 These lead to inconsistencies across the library and makes it
 difficult to write code that updates the data or style for interactive
-exploration, streaming, and animation.
-
+exploration and animation.
 
 
 ``Structured data'' combines multiple pieces of, possibly
