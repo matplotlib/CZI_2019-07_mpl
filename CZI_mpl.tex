@@ -272,24 +272,25 @@ or sophisticated that \texttt{Artist}s that use the data sources from
 core.
 
 
-\subsubsection{Additional Export Methods}
-
-Matplotlib \texttt{Figure}s can render to either raster or vector
-file formats, displaying the result in an interactive window and/or
-saving it to disk.  There is
-currently no good way to save and reopen a Matplotlib \texttt{Figure} or
-export it to another plotting library, such as \texttt{bokeh},
-\texttt{d3} or \texttt{QtCharts}.  In addition, due to the way Matplotlib
-internals are implemented, it is difficult to take advantage of GPUs to
-accelerate drawing.
-
-To address these problems we will investigate adding two additional
-export paths.  One, at a high-level, will be suitable for subsequent re-input
-to Matplotlib
-and for interoperability with other high-level plotting
-libraries. The second, at a low scene-graph level, will be suitable for passing
-to a GPU.
-
+% \subsubsection{Additional Export Methods}
+% % maybe nuke this section?
+% Matplotlib \texttt{Figure}s can render to either raster or vector
+% file formats, displaying the result in an interactive window and/or
+% saving it to disk.  There is
+% currently no good way to save and reopen a Matplotlib \texttt{Figure} or
+% export it to another plotting library, such as \texttt{bokeh},
+% \texttt{d3} or \texttt{QtCharts}.  In addition, due to the way Matplotlib
+% internals are implemented, it is difficult to take advantage of GPUs to
+% accelerate drawing.
+%
+% To address these problems we will investigate adding two additional
+% export paths.  One, at a high-level, will be suitable for subsequent re-input
+% to Matplotlib
+% and for interoperability with other high-level plotting
+% libraries. The second, at a low scene-graph level, will be suitable for passing
+% to a GPU.
+%
+%
 
 \subsection{Coordination with downstream projects}
 
