@@ -174,14 +174,13 @@ methods---which makes it extremely hard to use tab-completion to
 search for a method.
 
 To address these issues we will move to a primary API in which
-top-level functions take in data, style, and \texttt{Axes}(s) and return \texttt{Artist}s.
-These functions will use consistent naming and call conventions,
-as discussed in \ref{sec:api_hom},  consume the data objects discussed in section
-\ref{sec:dm}, and return the \texttt{Artist}s discussed in section
-\ref{sec:artists}.
-From the large pool of plotting functions, augmented by downstream
-libraries, we can curate domain-specific name spaces to enable users
-to discover the functionality they need.
+top-level functions take in data, style, and \texttt{Axes}(s) and
+return \texttt{Artist}s.  These functions will use consistent naming
+and call conventions, as discussed in \ref{sec:api_hom} and return the
+\texttt{Artist}s discussed in section \ref{sec:artists}.  From the
+large pool of plotting functions, augmented by downstream libraries,
+we can curate domain-specific name spaces to enable users to discover
+the functionality they need.
 
 This large-scale refactoring requires dedicated developer
 time to carefully consider the consequences and trade offs.
