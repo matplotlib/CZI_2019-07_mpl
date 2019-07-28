@@ -180,13 +180,9 @@ will curate domain-specific name spaces, which can be augmented by
 downstream libraries to enable users to discover the functionality
 they need.
 
-This is a huge change in the API that will require time to carefully
+This is a huge change in the API that will require dedicated developer
+time to carefully
 consider the consequences.
-% Does this mean it the consequences might be so bad that it won't be
-% pursued?  My point is that the sentence is true--but its role in the
-% proposal is unclear to me.  I'm not sure it is what you really want
-% to say here.
-
 
 
 \subsubsection{Rich, Semantic \texttt{Artist}s}
@@ -201,41 +197,34 @@ Currently, Matplotlib has a mix of ``primitive'' \texttt{Artist}s
 (e.g. lines, images, and text) and ``composite'' artists (e.g.,
 the whole \texttt{Figure}).
 
-The mapping between the user API and the \texttt{Artist}s can be
+We need to develop and apply a smarter, more uniform composite artist API.
+Presently the mapping between the user API and the \texttt{Artist}s can be
 one-to-one, but often one user call will generate many decoupled
-\texttt{Artist}s.  For example, \texttt{hist} displays a histogram,
+primitive \texttt{Artist}s.  For example, \texttt{hist} displays a histogram,
 but returns a list of independent \texttt{Rectangle} \texttt{Artist}s
 (one per bin).  If the user wants to update the data or the style,
-they must adjust each \texttt{Rectangle} independently.  While
-technically possible, this makes developing interactive figures and
-animations is significantly harder than it should be.  Instead, the
-functions discussed in \ref{sec:api_gen} should return objects that
-have a uniform interface to update their data and style to make
-interactive visualization development accessible to all users.
-
-% This still needs work.  Maybe the point is that composite artists
-% will be smarter, more widely used, and more uniform in their interface?
+they must adjust each \texttt{Rectangle} independently. Instead, the
+functions discussed in \ref{sec:api_gen} should return objects with
+a uniform interface for updating their data and style, making
+interactive visualizations easier for all users to develop.
 
 
 \subsubsection{Data Model}
 \label{sec:dm}
 
-``Structured data'' combines multiple pieces of, possibly
-heterogeneous, data along with labels, metadata, and the the
-relationship between the components into single data structure is
-not natively supported by Matplotlib.
- Currently users must split the structures up and pass the
-components individually into
-plotting methods, destroying the structure.
-
-
-Further, each plotting method and \texttt{Artist}s handle sanitizing
-and storing data independently.  This means that some common
+``Structured data'' combines multiple data elements along with labels,
+metadata, and the
+relationships among the components into a single data structure. Such
+structures are not natively supported by Matplotlib.  Instead, extracting
+data elements and reassembling them as arguments for Matplotlib plotting
+functions must be done at the level of user code.
+Further, each plotting method and \texttt{Artist} handles sanitizing
+and storing data independently.  Hence some common
 functionality, such as handling data with attached units (e.g.,
 degrees Celsius, dates), is scattered throughout the code base.  This
-leads to inconsistencies across library and makes it difficult to
+leads to inconsistencies across the library and makes it difficult to
 write code that updates the data or style for interactive exploration,
-streaming, and animation use cases.
+streaming, and animation.
 
 
 We will re-organize the internal data representation in Matplotlib to
@@ -246,11 +235,11 @@ By removing the direct data storage from
 the \texttt{Artist}s and defining an API for data sources we will enable:
 \begin{itemize}[noitemsep]
   \item native consumption of structured data;
-  \item smart down sampling of plotted data based on view limits;
-  \item seamless update the underlying data, either
+  \item smart down-sampling of plotted data based on view limits;
+  \item seamless updating of the underlying data, either
     streaming or interactively;
   %% this one maybe too much, cool idea, but not really mentioned anywhere else
-  \item non-materialized data sources such as database queries or analytic functions
+  \item use of alternative data sources such as database queries or analytic functions
 \end{itemize}
 We will decouple the development of the data access from the
 \texttt{Artist}s.  Downstream libraries will be able to provide
@@ -261,19 +250,20 @@ core.
 
 \subsubsection{Additional Export Methods}
 
-Matplotlib \texttt{Figure}s can be render to either raster or vector
-file formats.  From there it is displayed to an interactive window or
-saved to disk and be used like any other image file.  There is
+Matplotlib \texttt{Figure}s can render to either raster or vector
+file formats, displaying the result in an interactive window and/or
+saving it to disk. There is
 currently no good way to ``reopen'' a Matplotlib \texttt{Figure} or
 export it to another plotting library, such as \texttt{bokeh},
-\texttt{d3} or \texttt{QtCharts}.  Due to the way Matplotlib
-internals are implemented, it is difficult to take advantage GPUs to
+\texttt{d3} or \texttt{QtCharts}.  In addition, due to the way Matplotlib
+internals are implemented, it is difficult to take advantage of GPUs to
 accelerate drawing.
 
 To address these problems we will investigate adding two additional
-export paths.  One at a high-level, suitable for a Matplotlib-specific
-file format and interoperability with other high-level plotting
-libraries, and one at a low level scene-graph level, suitable to pass
+export paths.  One, at a high-level, will be suitable for subsequent re-input
+to Matplotlib
+and for interoperability with other high-level plotting
+libraries. The second, at a low scene-graph level, will be suitable for passing
 to a GPU.
 
 
@@ -281,13 +271,13 @@ to a GPU.
 
 
 The most common visualizations in a domain need to be one or two
-simple lines of code for the end-practitioners with the ``obvious''
-customization options surfaced.  Our goal is to make these libraries
+simple lines of code for the end-practitioners, with the ``obvious''
+customization options exposed.  Our goal is to make these libraries
 as thin and easy to write as possible.  This means there will always
-be a need for domain specific visualization libraries.  Much of the
+be a need for domain-specific visualization libraries.  Much of the
 domain-specific specialization is carried in the semantics of the
 structured data and the specific visualization needs of the domain.
-
+% That last sentence still needs work.
 
 To this end we will identify and engage with downstream libraries in
 the life sciences that are currently using Matplotlib for their
@@ -303,25 +293,27 @@ by CZI\label{f:czi}}, \texttt{scanpy}\footref{f:czi},
 \section{Expected outcomes, success evaluation and metrics}
 \subsection{Issue and PR curation}
 
-Quantitatively evaluating maintenance work can be tricky, some Issues
-or PRs can take minutes to review where as others can take days to
-months of effort, however we believe that there is value at looking at
-the net number of new Issues and Pull requests.  We will reduce this
+Quantitatively evaluating maintenance work can be tricky---some Issues
+or PRs can take minutes to review whil others can take days to
+months of effort---but we believe that there is value at looking at
+the number of open Issues and Pull requests.  We will reduce this
 number, ideally closing Issues and Pull Requests faster than they are
-opened.  NumPy has had success in reversing the ever increasing trends
-in the number of Issues / Pull Requests with paid
-developers \footnote{https://github.com/seberg/numpy\_talk\_plots/blob/master/plots\_used\_in\_talk/issues\_prs\_delta.pdf}.
+opened until a reasonable equilibrium is reached.
+With the introduction of paid developers,
+NumPy has had success in reversing the ever increasing trends
+in the number of Issues and Pull Requests
+\footnote{https://github.com/seberg/numpy\_talk\_plots/blob/master/plots\_used\_in\_talk/issues\_prs\_delta.pdf}.
 
 
-We will evaluate and label every open Issue and Pull Request
-determining: assigning an action, a priority, and an estimated
-difficulty.  Once that is done, we will aim to have all new Issues and
+We will evaluate and label every open Issue and Pull Request to
+assign an action, a priority, and an estimated
+difficulty.  Once the backlog is handled, we will aim to have all new Issues and
 Pull Requests labeled within 7 days of being opened.
 
 
 \subsection{Road-map and Architecture}
 
-We will write a white paper and road map documenting the proposed
+We will write a white paper with a road map documenting the proposed
 design, critical use-cases, and requirements for the data model and
 API overhaul.
 
@@ -329,27 +321,33 @@ To validate the design, we will develop end-to-end prototypes
 targeting one or more of the life-science libraries discussed above.
 
 % JMK Does this section need more?
+% EF Would the prototyping just show what use of the API would look like?
+%    How much of the actual mpl implementation would be expected?
+%    What is actually feasible in a year?
+%    It is OK for the proposal to be ambitious, but it should also
+%    show some recognition of reality.
 
 \section{Work Plan}
 
-The funds will be paid to:
+We request funding for the following:
 
 
 \begin{itemize}[noitemsep]
 
-\item Fund Thomas Caswell's position at 40\%.  Caswell is
+\item Thomas Caswell's position at 40\%.  Caswell is
   currently the lead developer of Matplotlib and an Associate
   Computational Scientist at Brookhaven National Laboratory.  His
   long-term experience, API design expertise, and project leadership
   are critical to the success of the work in this proposal.  He will work
   on all aspects of the proposal.
-\item Fund Hannah Aizenman's position for 12 months.  Aizenman has
-  been a core-contributor Matplotlib for three years and is the author of a major recent feature set (support for string-categorical values).  She
+\item Hannah Aizenman's position for 12 months.  Aizenman has
+  been a core-contributor Matplotlib for three years and is the author
+  of a major recent feature set (support for string-categorical values).  She
   is a PhD candidate in computer science studying visualization at The
   City College of New York.  Her work on the architecture of
   Matplotlib will be the basis of her PhD thesis.  Aizenman will take
   the lead on the data model design and new-contributor on-boarding.
-\item Fund 12 months of a yet-to-be identified software engineer to
+\item 12 months of a yet-to-be identified software engineer to
   support all aspects of the proposal but focusing on maintenance,
   prototyping, and engaging down-stream libraries.
 \item Travel to key Scientific and Python conferences (such as SciPy
@@ -358,8 +356,8 @@ The funds will be paid to:
 
 We want to use this dedicated effort to leverage and empower the
 Matplotlib developer community.  In terms of direct work on the code
-base an equal amount of time will be spent mentoring and reviewing
-code from community members rather than directly implementing features
+base, equal amounts of time will be spent mentoring and reviewing
+code from community members, and directly implementing features
 or fixing bugs.  All of the design work will be done in public with
 input from the community.
 
