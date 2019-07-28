@@ -148,7 +148,7 @@ to minimize breakage, but still unify the API.  Taking into account
 they are, which to deprecate, and which to replace.
 
 \subsubsection{API generalization}
-
+\label{sec:api_gen}
 Currently Matplotlib has two main user-facing APIs: the
 \texttt{pyplot} API and the \texttt{Object Oriented} (\texttt{OO})
 API.  The \texttt{pyplot} API closely follows MATLAB and is built
@@ -189,7 +189,7 @@ consider the consequences.
 
 
 
-\subsubsection{Rich Composite \texttt{Artist}s}
+\subsubsection{Rich, Semantic \texttt{Artist}s}
 \label{sec:artists}
 \texttt{Artist}s are the ``middle layer'' of Matplotlib that encode
 user-intent, style, and data.
@@ -203,13 +203,16 @@ the whole \texttt{Figure}).
 
 The mapping between the user API and the \texttt{Artist}s can be
 one-to-one, but often one user call will generate many decoupled
-\texttt{Artist}s.  For example, \texttt{hist} displays a histogram, but
-returns a list of independent \texttt{Rectangle} \texttt{Artist}s (one
-per bin).  If the user wants to update the data or the style, they
-must adjust each \texttt{Rectangle} independently.  Instead, we will
-have a single object that can have its data and style updated to
-simplify user code for interactive data exploration, consuming
-streaming data, and generating animations.
+\texttt{Artist}s.  For example, \texttt{hist} displays a histogram,
+but returns a list of independent \texttt{Rectangle} \texttt{Artist}s
+(one per bin).  If the user wants to update the data or the style,
+they must adjust each \texttt{Rectangle} independently.  While
+technically possible, this makes developing interactive figures and
+animations is significantly harder than it should be.  Instead, the
+functions discussed in \ref{sec:api_gen} should return objects that
+have a uniform interface to update their data and style to make
+interactive visualization development accessible to all users.
+
 % This still needs work.  Maybe the point is that composite artists
 % will be smarter, more widely used, and more uniform in their interface?
 
