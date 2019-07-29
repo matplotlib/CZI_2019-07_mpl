@@ -35,7 +35,7 @@ to grow as Python is further adopted in the life sciences.
 Matplotlib has been actively developed and maintained by a vibrant,
 primarily volunteer, community over the last 16 years.  However, given
 the scale, scope, and importance of the project, we are at the limit
-of what we can sustainable maintain and develop with primarily
+of what we can sustainably maintain and develop with a primarily
 volunteer effort.
 
 This proposal asks for 2.4 person years of developer effort for
@@ -89,7 +89,7 @@ To maintain Matplotlib's health we need to:
   % the people eventually rolling off (for what ever reason)
   % JMK: We hav a backlog of PRs largely because we don't have enough
   % people to review them. I think a larger community is key.
-\item Maintain backward compatibility.  If we do break API, ensure it
+\item Maintain backward compatibility.  If we do break the API, ensure it
   is intentional and well documented.
 \item Manage discussions about proposed enhancements, features, and
   breaking API changes.
@@ -240,9 +240,9 @@ difficult to write code that updates the data or style for interactive
 exploration and animation.
 
 
-``Structured data'' combines multiple pieces of, possibly
-heterogeneous, data along with labels and metadata into single data
-structure, is revolutionizing science, but is not fully exploited by
+``Structured data''--combining multiple pieces of (possibly
+heterogeneous) data along with labels and metadata into single data
+structure--is revolutionizing science, but is not fully exploited by
 Matplotlib.
 Instead, extracting
 data elements and reassembling them as arguments for Matplotlib plotting
@@ -268,7 +268,7 @@ the \texttt{Artist}s and defining an API for data sources we will enable:
 This will decouple the development of the data sources from the
 \texttt{Artist}s.  Downstream libraries will be able to provide
 sophisticated data sources to the \texttt{Artists} in the core library
-or sophisticated that \texttt{Artist}s that use the data sources from
+or sophisticated \texttt{Artist}s that use the data sources from
 core.
 
 
@@ -301,12 +301,12 @@ customization options exposed.
 Much of the domain-specific
 specialization carried in the semantics of the structured data and the
 specific visualization needs of the domain.  These vary widely between domains;
-no library can meet all of the needs simultaneous so there will always
+no library can meet all of the needs simultaneously so there will always
 be a need for domain-specific visualization libraries.
 Our goal is to make these libraries as easy to write as possible.
 % That last sentence still needs work.
-We will develop a set of guidelines to for the APIs so that downstream
-libraries ``feel'' similar and inter-operate well as well as tools and
+We will develop a set of guidelines for the APIs so that downstream
+libraries ``feel'' similar and inter-operate well, as well as tools and
 templates to make the process of developing a new library painless.
 
 We will engage with libraries in the life sciences that are currently
@@ -374,7 +374,7 @@ We request funding for the following:
   are critical to the success of the work in this proposal.  He will work
   on all aspects of the proposal.
 \item Hannah Aizenman's position for 12 months.  Aizenman has
-  been a core-contributor Matplotlib for three years and is the author
+  been a core-contributor to Matplotlib for three years and is the author
   of a major recent feature set (support for string-categorical values).  She
   is a PhD candidate in computer science studying visualization at The
   City College of New York.  Her work on the architecture of
