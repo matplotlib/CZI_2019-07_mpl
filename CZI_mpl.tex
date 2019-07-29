@@ -112,16 +112,17 @@ will need to find support from a variety of sources in the coming years.
 \subsection{Road-map and Architecture}
 
 Matplotlib needs sustained attention to update the library's
-architecture for the next decade.  The current
+architecture for the next decade.
+The current
 architecture\footnote{\url{https://www.aosabook.org/en/matplotlib.html}}
-of Matplotlib was developed 15 years ago \cite{Hunter:2007}.  That it
-is still in use is a testament to its initial design; but that design
-does not reflect recent developments in data structures, software
-design, and visualization.  Matplotlib does not natively know how to
-exploit structured (e.g. \texttt{pandas} or \texttt{xarray}) and some
-of the design choices about data structures and name space
-organization are becoming constraints as Matplotlib is adopted by more
-domains.
+of Matplotlib was developed 15 years ago \cite{Hunter:2007} and has served
+us well, a testament to its initial design, but it
+does not reflect recent developments in software architecture, data
+structures, and visualization.
+We will improve the consistency, composability, and discoverabilty of the API,
+taking better advantage of modern data structures.  The
+ultimate goal is facilitating rich interactive domain-specific visualizations.
+
 
 %% We will develop
 %% plans for refactoring the core library to facilitate its extension and
@@ -241,7 +242,7 @@ exploration and animation.
 
 ``Structured data'' combines multiple pieces of, possibly
 heterogeneous, data along with labels and metadata into single data
-structure, is revolutionizing science, but is not natively supported by
+structure, is revolutionizing science, but is not fully exploited by
 Matplotlib.
 Instead, extracting
 data elements and reassembling them as arguments for Matplotlib plotting
