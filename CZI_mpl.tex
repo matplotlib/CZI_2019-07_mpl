@@ -1,14 +1,21 @@
 \documentclass[11pt,letterpaper]{article}  % min is 11pt
 
 \usepackage[sort&compress,numbers]{natbib}
-\usepackage[margin=1in,letterpaper]{geometry}  % min is .5 in
+\usepackage[margin=1.5in,letterpaper]{geometry}  % min is .5 in
 \usepackage[shortlabels]{enumitem}
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{footmisc}
 \usepackage[hidelinks]{hyperref}
+\usepackage{times}
+\usepackage{fancyhdr}
+\rhead{\emph{CZI: Essential Open Source Software for Science}}
+\lhead{\emph{Matplotlib: Scientific Visualization}}
+%\linespread{1.5}
 
-\linespread{1.5}
+\setlist[itemize]{noitemsep, topsep=0pt}
+
+\pagestyle{fancy}
 
 \begin{document}
 \title{Matplotlib - Foundation of Visualization in Python}
@@ -35,7 +42,7 @@ to grow as Python is further adopted in the life sciences.
 Matplotlib has been actively developed and maintained by a vibrant,
 primarily volunteer, community over the last 16 years.  However, given
 the scale, scope, and importance of the project, we are at the limit
-of what we can sustainable maintain and develop with primarily
+of what we can sustainably maintain and develop with a mostly
 volunteer effort.
 
 This proposal asks for 2.4 person years of developer effort for
@@ -94,7 +101,6 @@ To maintain Matplotlib's health we need to:
 \item Manage discussions about proposed enhancements, features, and
   breaking API changes.
 \end{itemize}
-
 The requested support for developers is intended to complement and
 facilitate, not replace, the crucial work by volunteers.  We aim to
 better co-ordinate and nurture their
@@ -207,7 +213,7 @@ translate that intent on to the rendered output.
 We need to embrace composite artists
 to provide a smarter, more uniform \texttt{Artist} API.
 Currently, Matplotlib has a mix of ``primitive'' \texttt{Artist}s
-(e.g. lines, images, and text) and ``composite'' artists (e.g.,
+(e.g., lines, images, and text) and ``composite'' artists (e.g.,
 the whole \texttt{Figure}).
 Presently the mapping between the user API and the \texttt{Artist}s can be
 one-to-one, but often one user call will generate many decoupled
