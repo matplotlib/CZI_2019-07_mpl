@@ -152,14 +152,13 @@ Currently Matplotlib has two main user-facing APIs: the
 \texttt{pyplot} API and the \texttt{Object Oriented} (\texttt{OO})
 API.  The \texttt{pyplot} API closely follows MATLAB and is built
 around the concept of a global ``current Axes''.
-While
-\texttt{pyplot} is convenient for interactive terminal usage, the global
-state frequently produces surprising and undesired coupling when used
-by libraries.
-% Something is missing in the line above, but I don't know what it is...
-%% An example of what sort of surprising and undesired coupling?
-% hard to do without a bunch of jargon, with admittedly we go into
-% below
+Although \texttt{pyplot} can be convenient for interactive terminal
+usage, it is easy to lose track of which Axes is the ``current Axes'';
+particularly when library functions, where code is typically hidden
+from the user, are also using \texttt{pyplot}.
+This uncertainty as to
+which Axes is the ``current Axes'' frequently results in data being
+plotted to wrong and surprising places.
 On the other hand the \texttt{OO} interface is more flexible and
 explicit but more verbose.
 The main name space for plotting methods in the \texttt{OO} API is
@@ -299,25 +298,29 @@ core.
 \subsection{Coordination with downstream projects}
 
 
-The most common visualizations in a domain need to be fluid
-for the end-practitioners, with the ``obvious''
-customization options exposed.
-Much of the domain-specific
-specialization carried in the semantics of the structured data and the
-specific visualization needs of the domain.  These vary widely between domains;
-no library can meet all of the needs simultaneously so there will always
-be a need for domain-specific visualization libraries.
+The most common visualizations in a domain need to be fluid for the
+end-practitioners, with the ``obvious'' customization options exposed.
+Much of the domain-specific specialization carried in the semantics
+and structure of the data, the assumptions that can be made about the
+data, and the standard visualizations of the domain.  All three can
+vary widely, in contradictory ways, between domains.  No high-level
+API can simultaneously satisfy all of the visualization needs for all
+of the domains; there will always be a need for domain-specific
+visualization libraries.
+
+
 Our goal is to make these libraries as easy to write as possible.
 % That last sentence still needs work.
 We will develop a set of guidelines for the APIs so that downstream
-libraries ``feel'' similar and inter-operate well, as well as tools and
-templates to make the process of developing a new library painless.
+libraries inter-operate well and ``feel'' similar, as well as tools
+and templates to make the process of developing a new library
+painless.
 
 We will engage with libraries in the life sciences that are currently
 using Matplotlib for their visualization to ensure that we are
 addressing their problems and to collaborate on prototyping a
-end-to-end solution.
-In particular we plan to engage with
+end-to-end solution, including Data classes, \texttt{Artist}s, and a
+high-level user API.  In particular we plan to engage with
 \texttt{scikit-learn}\footnote{Also applying for Essential Open Source
 Software for Science}, \texttt{CellProfiler}\footnote{Currently funded
 by CZI\label{f:czi}}, \texttt{scanpy}\footref{f:czi},
@@ -385,11 +388,14 @@ We request funding for the following:
   (support for string-categorical values).
   %% dunno, like mostly if I'm responsibly for new contributor onboarding,
   %% do I need to explain why I'm qualified to do this?
+  % no
   She is a PhD candidate in computer science studying visualization at The
   Graduate Center, CUNY.  Her work on the architecture of
   Matplotlib will be the basis of her PhD thesis.  Aizenman will take
   the lead on the data model design and new-contributor on-boarding.
+\item Summer support for Micheal Grossberg, Hannah Aizenman's PhD advisor.
 \item 12 months of a yet-to-be identified software engineer to
+
   support all aspects of the proposal but focusing on maintenance,
   prototyping, and engaging down-stream libraries.
 \item Travel to key Scientific and Python conferences (such as SciPy
