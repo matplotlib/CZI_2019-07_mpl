@@ -50,6 +50,7 @@ To strengthen the library and lay the groundwork for future versions, this propo
 \end{enumerate}
 
 \subsection{Fostering downstream projects}
+\label{sec:downstream}
 We will engage with libraries in the life sciences that are currently
 using Matplotlib for their visualization to ensure that we are
 addressing their problems and to collaborate on prototyping a
@@ -68,18 +69,18 @@ Through maintaining the code base and developing the architecture for the next v
 
 Matplotlib is a community-driven project, but we have grown to the point where we need developers with the time to organize, plan, and make decisions. Issues and PRs are submitted faster than our volunteers can
 review them; for the past few years we have closed approximately 40 Issues
-and merged about 30 PRs a month, and in the same time frame 50 new issues are opened and 40 PRs are proposed. 
+and merged about 30 PRs a month, and in the same time frame 50 new Issues are opened and 40 PRs are proposed. 
 
-We have accumulated about 1200 open issues and 300 open PRs due to this imbalance. There may be critical bug reports or insightful feature requests among the former, while among the latter are useful contributions or bug fixes that would improve Matplotlib for direct users and downstream packages. The backlog is discouraging for new and occasional contributor and distracting for core developers.
+We have accumulated about 1200 open Issues and 300 open PRs due to this imbalance. There may be critical bug reports or insightful feature requests among the former, while among the latter are useful contributions or bug fixes that would improve Matplotlib for direct users and downstream packages. The backlog is discouraging for new and occasional contributor and distracting for core developers.
 
 To maintain Matplotlib's health we need to:
 %% these can probably be shortened further, to just stuff like Triage and on board 
 %%since explainations are in text
 \begin{itemize}[noitemsep]
 \item Fix critical bugs and regressions
-\item Triage backlog of issues and PRs in terms of
+\item Triage backlog of Issues and PRs in terms of
   topic, difficulty, and urgency and promptly triage newly
-  opened issues and PRs
+  opened Issues and PRs
 \item Maintain backward compatibility and document extensively for intentional changes
 \item On-board new contributors to sustain and diversify developer team
 \item Manage discussions about proposed enhancements, features, and API changes
@@ -179,101 +180,51 @@ Instead, the functions discussed in \ref{sec:api_gen} should return objects with
 a uniform update interface, making interactive visualizations easier to develop.
 
 
-
-
 \subsubsection{Data Model}
 \label{sec:dm}
+Matplotlib needs a consistent way for \texttt{Artist}s to access their underlying data. Currently, each plotting method and \texttt{Artist} handles sanitizing and storing data independently. Hence, some common functionality, such as handling data with attached units (e.g., degrees Celsius, dates), is scattered throughout the code base. This leads to inconsistencies across the library and makes it difficult for users to write code that updates interactive explorations and animations. Matplotlib also cannot exploit ``Structured data''--combining multiple pieces of (possibly heterogeneous) data along with labels and metadata into single data structure; instead users must extract data elements and reassemble them as arguments for Matplotlib plotting functions.
 
-Matplotlib needs a consistent way for \texttt{Artist}s to access their
-underlying data.
-Currently, each plotting method and \texttt{Artist} handles sanitizing
-and storing data independently.
-Hence, some common functionality, such as handling data with attached
-units (e.g., degrees Celsius, dates), is scattered throughout the code
-base.
-This leads to inconsistencies across the library and makes it
-difficult for users to write code that updates the data or style for interactive
-exploration and animation.
-``Structured data''--combining multiple pieces of (possibly
-heterogeneous) data along with labels and metadata into single data
-structure--is revolutionizing science, but is not fully exploited by
-Matplotlib.
-Instead, extracting
-data elements and reassembling them as arguments for Matplotlib plotting
-functions must be done at the level of user code.
+We will develop a data access API such that each \texttt{Artist} will have a single \texttt{Data} object responsible for holding the data. This model will be the technical underpinning to handle, exploit, and
+update structured data in a coherent fashion. By removing direct data storage from the \texttt{Artist}s and defining an API for data sources we will enable:
 
-
-
-We will develop a data access API such that each \texttt{Artist} will
-have a single \texttt{Data} object responsible for actually holding the data.
-This model be the technical underpinning to handle, exploit, and
-update structured data in a coherent fashion.
-By removing the direct data storage from
-the \texttt{Artist}s and defining an API for data sources we will enable:
 \begin{itemize}[noitemsep]
-  \item native consumption of structured data;
-  \item smart down-sampling of plotted data based on view limits;
-  \item seamless updating of the underlying data, either
-    streaming or interactively;
-  %% this one maybe too much, cool idea, but not really mentioned anywhere else
+  \item native consumption of structured data
+  \item smart down-sampling of plotted data based on view limits
+  \item seamless updating of the underlying data, either interactively or via streams
   \item use of alternative data sources such as database queries or analytic functions
 \end{itemize}
-This will decouple the implementation of the data sources from the
-\texttt{Artist}s.  Downstream libraries will be able to provide
-sophisticated data sources to the \texttt{Artists} in the core library
-or sophisticated \texttt{Artist}s that use the data sources from
-core.
 
+This will decouple the implementation of the data sources from the \texttt{Artist}s.  Downstream libraries will be able to provide sophisticated data sources to the \texttt{Artists} in the core library, build complex \texttt{Artist}s that use the data sources from core, and create specialized forms of the data model for increased efficiency. 
 
 % \subsubsection{Additional Export Methods}
 % % maybe nuke this section?
 % Matplotlib \texttt{Figure}s can render to either raster or vector
-% file formats, displaying the result in an interactive window and/or
+% file formats, displaying the result in an interactive window or
 % saving it to disk.  There is
 % currently no good way to save and reopen a Matplotlib \texttt{Figure} or
 % export it to another plotting library, such as \texttt{bokeh},
 % \texttt{d3} or \texttt{QtCharts}.  In addition, due to the way Matplotlib
 % internals are implemented, it is difficult to take advantage of GPUs to
-% accelerate drawing.
-%
-% To address these problems we will investigate adding two additional
+% accelerate drawing. To address these problems, we will investigate adding two additional
 % export paths.  One, at a high-level, will be suitable for subsequent re-input
-% to Matplotlib
-% and for interoperability with other high-level plotting
+% to Matplotlib and for interoperability with other high-level plotting
 % libraries. The second, at a low scene-graph level, will be suitable for passing
 % to a GPU.
 
 \section{Expected outcomes, success evaluation and metrics}
-\subsection{Issue and PR curation}
+\subsection{Maintenance}
 
 Quantitatively evaluating maintenance work can be tricky---some Issues
-or PRs can take minutes to review while  others can take days to
+or PRs take minutes to review while others can take days to
 months of effort---but we believe that there is value at looking at
-the number of open Issues and PRs.  We will reduce this
-number, closing Issues and PRs faster than they are
-opened until a reasonable equilibrium is reached.
-With the introduction of paid developers,
-NumPy has had success in reversing the ever increasing trends
-in the number of Issues and Pull Requests\footnote{https://github.com/seberg/numpy\_talk\_plots/blob/master/plots\_used\_in\_talk/issues\_prs\_delta.pdf}.
+the number of open Issues and PRs.  We will reduce this number by closing Issues and PRs at a faster rate than they are opened until a reasonable equilibrium is reached. With the introduction of paid developers, NumPy has had success in reversing the ever increasing trends in the number of Issues and Pull Requests\footnote{https://github.com/seberg/numpy\_talk\_plots/blob/master/plots\_used\_in\_talk/issues\_prs\_delta.pdf}. Once the backlog is handled, we aim to have all new Issues and Pull Requests labeled within 7 days of being opened.
 
+We will evaluate the success of our new contributor onboarding by aiming to increase the percentage of new contributor PRs that get resolved and by decreasing the amount of time it takes for resolution. We also aim to increase the number of PRs submitted by non core developers. 
 
-We will evaluate and label every open Issue and Pull Request to
-assign an action, a priority, and an estimated
-difficulty.  Once the backlog is handled, we will aim to have all new Issues and
-Pull Requests labeled within 7 days of being opened.
-%% 75% of issues are closed within 7 days & 75% of PRs are merged w/in 7 days, (closed within 10)
-%% about 50% are closed within a day
-%% we need better triaging and closing policies for the 25%
 
 \subsection{Road-map and Architecture}
 
-We will write a white paper with a road map documenting the proposed
-design, critical use-cases, and requirements for the data model and
-API overhaul.
-
-To validate the design, we will develop end-to-end prototypes
-targeting one or more of the life-science libraries discussed above
-to validate the design.
+We will write a white paper with a road map documenting the proposed design, critical use-cases, and requirements for the data model and API overhaul.
 
 % JMK Does this section need more?
 % EF Would the prototyping just show what use of the API would look like?
@@ -281,6 +232,9 @@ to validate the design.
 %    What is actually feasible in a year?
 %    It is OK for the proposal to be ambitious, but it should also
 %    show some recognition of reality.
+
+\section{Downstream Libraries}
+To validate the design, we will develop end-to-end prototypes targeting one or more of the life-science libraries discussed in \ref{sec:downstream}. We will qualitatively assess downstream library developers engagement with the prototypes and when possible incorporate their feedback into the design. 
 
 \section{Work Plan}
 
