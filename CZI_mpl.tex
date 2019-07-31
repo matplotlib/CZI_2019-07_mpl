@@ -23,54 +23,52 @@
 
 \section{Goals}
 
-Matplotlib\footnote{\url{http://matplotlib.org}} is the fundamental
-data visualization library for the scientific Python Ecosystem, used
-in conjunction with other foundational tools like Numpy and
-SciPy\footnote{\url{https://www.scipy.org/about.html}} by over a
-million\footnote{Estimated from \texttt{pypi} download numbers,
-\texttt{conda} download numbers, and the number of unique monthly
-visitors to the documentation website} users.  Matplotlib is used
-across a wide spectrum of fields, including bio-medical imaging,
-microscopy, and genomics
-\cite{Carpenter2006,Wolf2018,10.7717/peerj.453,
+Matplotlib\cite{Hunter:2007} is the fundamental 
+data visualization library for the scientific Python Ecosystem, used 
+in conjunction with other foundational tools like NumPy and
+SciPy \cite{Jones2001} by over a million\footnote{Estimated from \texttt{pypi} 
+and \texttt{conda} download numbers and unique monthly visitors to the documentation website} users.  
+Matplotlib is used across a wide spectrum of fields, including bio-medical imaging,
+microscopy, and genomics \cite{Carpenter2006,Wolf2018,10.7717/peerj.453,
   Segata2011,10.1371/journal.pgen.1000695,HASHIMSHONY2012666,
   10.1093/bioinformatics/bts480,Carlile2014,Laganowsky2014,Jiangaac9462,
-  10.3389/fninf.2014.00014}, and we expect this user base to continue
-to grow as Python continues to be adopted in the life sciences.
-
+  10.3389/fninf.2014.00014}, and we expect this user base to grow as Python 
+  continues to be adopted in the life sciences. %%?citation needed that this still happening?
 Matplotlib has been actively developed and maintained by a vibrant,
-primarily volunteer, community over the last 16 years.  However, given
+primarily volunteer, community over the last 16 years; However, given
 the scale, scope, and importance of the project, we are at the limit
-of what we can sustainably maintain and develop with a mostly
+of what we can sustainably maintain and develop with mostly
 volunteer effort.
 
-This proposal asks for 2.4 person years of developer effort for
-Matplotlib, laying the groundwork for the next 16 years by supporting:
+To strengthen the library and lay the groundwork for future versions, this 
+ proposal asks for 2.4 person years of developer effort to support:
+  %%does this have any semantic meeting?
 
 \begin{enumerate}[label=\alph*),noitemsep]
-  \item Maintenance of the library, including labeling new and
-    existing Issues and Pull Requests (PRs).
+  \item Fostering community, documentation, and tools to grow a rich ecosystem of domain-specific libraries built using Matplotlib 
+  \item Maintaining the code base, e.g. triaging issues and pull requests (PRs) and fixing bugs
   \item Developing a comprehensive plan to evolve the core architecture
-    of Matplotlib.
-  \item Developing the tools, documentation, and community to foster a
-    rich eco-system of domain-specific plotting tools built on
-    Matplotlib.
 \end{enumerate}
 
+\subsection{Fostering downstream projects}
+We will engage with libraries in the life sciences that are currently
+using Matplotlib for their visualization to ensure that we are
+addressing their problems and to collaborate on prototyping a
+end-to-end solution, including data, plot representations, and a high-level user API.  
+In particular we plan to engage with \texttt{scikit-learn}\footnote{Also applying for Essential Open Source
+Software for Science}, \texttt{CellProfiler}\footnote{Currently funded
+by CZI\label{f:czi}}, \texttt{scanpy}\footref{f:czi}, \texttt{starfish}\footref{f:czi}, \texttt{nipy}, and
+\texttt{scikit-image}\footref{f:czi} \cite{10.7717/peerj.453,Carpenter2006, Wolf2018}
 
-% The goal is the maintenance; curating is the method of achieving it.
+Our goal is to make these libraries and ones like them easier to write.
+The most common visualizations in a domain need to be fluid for the end-practitioners, with the ``obvious'' customization options exposed. Much of the domain-specific specialization is carried in the structure, semantics and assumptions of the data, and in the standard visualizations of the domain. These specializations can vary widely, in contradictory ways, between domains. Because no high-level API can simultaneously satisfy all of the visualization needs, there will always be a need for domain-specific visualization libraries.
+
+Through maintaining the code base and developing the architecture for the next version, we will generate API guidelines so that downstream libraries inter-operate well and ``feel'' similar. By building out community, templates, and tools, we will provide downstream library developers and downstream users resources for getting the most out of building their tools on top of Matplotlib. 
+
+
 \subsection{Maintenance and Growth of Library and Community}
 
-% JMK Try to start paragraphs with what you will do, and then defend
-% why it is necessary
-% JMK I'm pretty skeptical that CZI will find closing issues sexy
-% enough.  Thats why I was suggesting curation and community-building
-% as a way to express the same thing.
-
-Matplotlib is a community-driven project, but we have grown to the
-% contemplating deleting "with the time"
-point where we need supported developers with the time to organize,
-plan, and make timely decisions.  Currently, new Issues and PRs
+Matplotlib is a community-driven project, but we have grown to the point where we need supported developers with the time to organize, plan, and make timely decisions. Currently, new Issues and PRs
 are being submitted faster than our volunteers can
 review them.  For the past few years, we have closed about 43 Issues
 and merged 33 PRs month; and however every month about 51 new issues
@@ -295,42 +293,6 @@ core.
 % and for interoperability with other high-level plotting
 % libraries. The second, at a low scene-graph level, will be suitable for passing
 % to a GPU.
-%
-%
-
-\subsection{Coordination with downstream projects}
-
-
-The most common visualizations in a domain need to be fluid for the
-end-practitioners, with the ``obvious'' customization options exposed.
-Much of the domain-specific specialization carried in the structure
-and semantics of the data, assumptions  about the
-data, and the standard visualizations of the domain.  All three can
-vary widely, in contradictory ways, between domains.  No high-level
-API can simultaneously satisfy all of the visualization needs for all
-of the domains; there will always be a need for domain-specific
-visualization libraries.
-
-
-Our goal is to make these libraries as easy to write as possible.
-% That last sentence still needs work.
-We will develop a set of guidelines for the APIs so that downstream
-libraries inter-operate well and ``feel'' similar, as well as tools
-and templates to make the process of developing a new library
-painless.
-We will engage with libraries in the life sciences that are currently
-using Matplotlib for their visualization to ensure that we are
-addressing their problems and to collaborate on prototyping a
-end-to-end solution, including Data classes, \texttt{Artist}s, and a
-high-level user API.  In particular we plan to engage with
-\texttt{scikit-learn}\footnote{Also applying for Essential Open Source
-Software for Science}, \texttt{CellProfiler}\footnote{Currently funded
-by CZI\label{f:czi}}, \texttt{scanpy}\footref{f:czi},
-\texttt{starfish}\footref{f:czi}, \texttt{nipy}, and
-\texttt{scikit-image}\footref{f:czi}
-
-
-
 
 \section{Expected outcomes, success evaluation and metrics}
 \subsection{Issue and PR curation}
