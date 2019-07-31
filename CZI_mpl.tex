@@ -18,13 +18,13 @@
 \section{Goals}
 
 Matplotlib\footnote{\url{http://matplotlib.org}} is the fundamental
-data visualization library for the scientific Python ecosystem, used
-by over a million\footnote{Estimated from \texttt{pypi} download
-numbers, \texttt{conda} download numbers, and the number of unique
-monthly visitors to the documentation website} users in conjunction
-with other foundational tools like Numpy and
-SciPy\footnote{\url{https://www.scipy.org/about.html}}.  Matplotlib is
-used across a wide spectrum of fields, including bio-medical imaging,
+data visualization library for the scientific Python Ecosystem, used
+in conjunction with other foundational tools like Numpy and
+SciPy\footnote{\url{https://www.scipy.org/about.html}} by over a
+million\footnote{Estimated from \texttt{pypi} download numbers,
+\texttt{conda} download numbers, and the number of unique monthly
+visitors to the documentation website} users.  Matplotlib is used
+across a wide spectrum of fields, including bio-medical imaging,
 microscopy, and genomics
 \cite{Carpenter2006,Wolf2018,10.7717/peerj.453,
   Segata2011,10.1371/journal.pgen.1000695,HASHIMSHONY2012666,
@@ -42,7 +42,7 @@ This proposal asks for 2.4 person years of developer effort for
 Matplotlib, laying the groundwork for the next 16 years by supporting:
 
 \begin{enumerate}[label=\alph*),noitemsep]
-  \item Maintenance of the library, including curating new and
+  \item Maintenance of the library, including labeling new and
     existing Issues and Pull Requests (PRs).
   \item Developing a comprehensive plan to evolve the core architecture
     of Matplotlib.
@@ -62,22 +62,25 @@ Matplotlib, laying the groundwork for the next 16 years by supporting:
 % as a way to express the same thing.
 
 Matplotlib is a community-driven project, but we have grown to the
+% contemplating deleting "with the time"
 point where we need supported developers with the time to organize,
-plan, and make timely decisions.  Currently, new Issues and Pull Requets (PRs) are
-being submitted faster than our volunteers can review them.  For the past few years, we have 
-merged about 33 PRs and 43 Issues a month; and every month about 51 new issues and 40 PRs are opened, 
-such that we currently have about 1200 open issues and 300 open PRs.  Among the
-former there may be critical bug reports or insightful feature
-requests and among the latter are useful contributions or bug fixes
-that would improve Matplotlib for direct users and downstream
-packages.  The backlog is discouraging for new or occasional
-contributors, and distracting for core developers.
+plan, and make timely decisions.  Currently, new Issues and Pull
+Requets (PRs) are being submitted faster than our volunteers can
+review them.  For the past few years, we have closed about 43 Issues
+and merged 33 PRs month; and however every month about 51 new issues
+are opened and 40 PRs are proposed.  We have accumulated about 1200 open issues and
+300 open PRs.  Among the former there may be critical bug reports or
+insightful feature requests and among the latter are useful
+contributions or bug fixes that would improve Matplotlib for direct
+users and downstream packages.  The backlog is discouraging for new or
+occasional contributors, and distracting for core developers.
 
 To maintain Matplotlib's health we need to:
 
 \begin{itemize}[noitemsep]
-\item Curate current backlog of Issues and PRs in terms of topic, difficulty, and urgency.
-\item Promptly label and review newly opened Issues and PRs
+\item Label and review current backlog of Issues and PRs in terms of
+  topic, difficulty, and urgency.  Promptly label and review newly
+  opened Issues and PRs
 \item Fix critical bugs and regressions promptly.
 \item On-board new contributors to the project team; this is critical to
   sustaining and diversifying our developer community.
@@ -111,9 +114,9 @@ Matplotlib needs sustained attention to update the library's
 architecture for the next decade.
 The current
 architecture\footnote{\url{https://www.aosabook.org/en/matplotlib.html}}
-of Matplotlib was developed 15 years ago \cite{Hunter:2007} and has served
+of Matplotlib was developed over 15 years ago \cite{Hunter:2007} and has served
 us well, a testament to its initial design, but it
-does not reflect recent developments in software architecture, data
+does not reflect recent developments in software design, data
 structures, and visualization.
 We will improve the consistency, composability, and discoverabilty of the API,
 taking better advantage of modern data structures.  The
@@ -150,11 +153,13 @@ Currently Matplotlib has two main user-facing APIs: the
 API.  The \texttt{pyplot} API closely follows MATLAB and is built
 around the concept of a global ``current Axes''.
 While
-\texttt{pyplot} is convenient for interactive usage, the global
+\texttt{pyplot} is convenient for interactive terminal usage, the global
 state frequently produces surprising and undesired coupling when used
-in libraries.
+by libraries.
 % Something is missing in the line above, but I don't know what it is...
-%% An example of what sort of surprising and undesired coupling? 
+%% An example of what sort of surprising and undesired coupling?
+% hard to do without a bunch of jargon, with admittedly we go into
+% below
 On the other hand the \texttt{OO} interface is more flexible and
 explicit but more verbose.
 The main name space for plotting methods in the \texttt{OO} API is
@@ -176,12 +181,12 @@ top-level functions take in data, style, and \texttt{Axes}(s) and
 return \texttt{Artist}s.  These functions will use consistent naming
 and call conventions, as discussed in \ref{sec:api_hom} and return the
 \texttt{Artist}s discussed in section \ref{sec:artists}.  From the
-large pool of plotting functions, augmented by downstream libraries,
-we can curate domain-specific name spaces to enable users to discover
-the functionality they need.
+large pool of plotting functions, augmented in collaboration with
+downstream libraries, we will curate domain-specific name spaces to
+enable users to discover the functionality they need.
 
-This large-scale refactoring requires dedicated developer
-time to carefully consider the consequences and trade offs.
+This large-scale refactoring requires dedicated developer time to
+carefully consider and engage with our users about the consequences.
 
 % This is a huge change in the API that will require time to carefully
 % consider the consequences.
@@ -191,6 +196,8 @@ time to carefully consider the consequences and trade offs.
 % proposal is unclear to me.  I'm not sure it is what you really want
 % to say here.
 %% also this is some serious levels of community work
+% TAC: considered just removing it, but I like HA's suggestion of adding a
+% community aspect of it.
 
 
 
@@ -203,14 +210,14 @@ objects, and \texttt{Artist}s know how to
 translate that intent on to the rendered output.
 
 We need to embrace composite artists
-to provide a smarter, more uniform \texttt{Artist} API. 
+to provide a smarter, more uniform \texttt{Artist} API.
 Currently, Matplotlib has a mix of ``primitive'' \texttt{Artist}s
 (e.g. lines, images, and text) and ``composite'' artists (e.g.,
-the whole \texttt{Figure}). 
+the whole \texttt{Figure}).
 Presently the mapping between the user API and the \texttt{Artist}s can be
 one-to-one, but often one user call will generate many decoupled
 primitive \texttt{Artist}s.
-For example, \texttt{hist} displays a histogram,
+For example, \texttt{hist} displays a histogram, notionally a single entity to the user,
 but returns a list of independent \texttt{Rectangle} \texttt{Artist}s
 (one per bin).
 If the user wants to update the data or the style,
@@ -228,15 +235,14 @@ interactive visualizations easier for all users to develop.
 
 Matplotlib needs a consistent way for \texttt{Artist}s to access their
 underlying data.
-Further, each plotting method and \texttt{Artist} handles sanitizing
+Currently, each plotting method and \texttt{Artist} handles sanitizing
 and storing data independently.
 Hence some common functionality, such as handling data with attached
 units (e.g., degrees Celsius, dates), is scattered throughout the code
 base.
 These lead to inconsistencies across the library and makes it
-difficult to write code that updates the data or style for interactive
+difficult for users to write code that updates the data or style for interactive
 exploration and animation.
-
 
 ``Structured data''--combining multiple pieces of (possibly
 heterogeneous) data along with labels and metadata into single data
@@ -375,9 +381,9 @@ We request funding for the following:
   on all aspects of the proposal.
 \item Hannah Aizenman's position for 12 months.  Aizenman has
   been a core-contributor to Matplotlib for three years. She has helped lead outreach efforts such as
-  Matplotlib's Google Summer of Code participation and is the author of a major recent feature set 
+  Matplotlib's Google Summer of Code participation and is the author of a major recent feature set
   (support for string-categorical values).
-  %% dunno, like mostly if I'm responsibly for new contributor onboarding, 
+  %% dunno, like mostly if I'm responsibly for new contributor onboarding,
   %% do I need to explain why I'm qualified to do this?
   She is a PhD candidate in computer science studying visualization at The
   Graduate Center, CUNY.  Her work on the architecture of
