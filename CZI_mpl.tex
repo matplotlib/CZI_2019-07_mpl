@@ -51,37 +51,30 @@ To strengthen the library and lay the groundwork for future versions, this propo
 
 \subsection{Fostering downstream projects}
 \label{sec:downstream}
-We will engage with libraries in the life sciences that are currently
-using Matplotlib for their visualization to ensure that we are
-addressing their problems and to collaborate on prototyping a
-end-to-end solution, including data, plot representations, and a high-level user API.  
+We will engage with libraries in the life sciences that are using Matplotlib for their visualization to ensure that we are addressing their problems and to collaborate on prototyping an end-to-end solution, including data, plot representations, and a high-level user API.  
 In particular we plan to engage with \texttt{scikit-learn}\footnote{Also applying for Essential Open Source
 Software for Science}, \texttt{CellProfiler}\footnote{Currently funded
 by CZI\label{f:czi}}, \texttt{scanpy}\footref{f:czi}, \texttt{starfish}\footref{f:czi}, \texttt{nipy}, and
 \texttt{scikit-image}\footref{f:czi} \cite{10.7717/peerj.453,Carpenter2006, Wolf2018}
 
-Our goal is to make these libraries and ones like them easier to write.
-The most common visualizations in a domain need to be fluid for the end-practitioners, with the ``obvious'' customization options exposed. Much of the domain-specific specialization is carried in the structure, semantics and assumptions of the data, and in the standard visualizations of the domain. These specializations can vary widely, in contradictory ways, between domains. Because no high-level API can simultaneously satisfy all of the visualization needs, there will always be a need for domain-specific visualization libraries.
+Our goal is to make these libraries and ones like them easier to write. The most common visualizations in a domain need to be fluid for the end-practitioners, with the ``obvious'' customization options exposed. Much of the domain-specific specialization is carried in the structure, semantics and assumptions of the data, and in the standard visualizations of the domain. These specializations can vary widely, in contradictory ways, between domains. Because no high-level API can simultaneously satisfy all of the visualization needs, there will always be a need for domain-specific visualization libraries.
 
-Through maintaining the code base and developing the architecture for the next version, we will generate API guidelines so that downstream libraries inter-operate well and ``feel'' similar. By building out community, templates, and tools, we will provide downstream library developers and downstream users resources for getting the most out of building their tools on top of Matplotlib. 
+Through maintaining the code base and developing the architecture for the next version, we will generate API guidelines so that downstream libraries inter-operate well and ``feel'' similar. By building out community, documentation, and tools, we will provide downstream library developers resources for getting the most out of building their tools on top of Matplotlib. 
 
 \subsection{Maintenance and Growth of Library and Community}
 
 Matplotlib is a community-driven project, but we have grown to the point where we need developers with the time to organize, plan, and make decisions. Issues and PRs are submitted faster than our volunteers can
-review them; for the past few years we have closed approximately 40 Issues
-and merged about 30 PRs a month, and in the same time frame 50 new Issues are opened and 40 PRs are proposed. 
+review them; for the past few years we have resolved approximately 40 Issues and 30 PRs a month, but every month about 50 new Issues are opened and 40 PRs are proposed.
 
-We have accumulated about 1200 open Issues and 300 open PRs due to this imbalance. There may be critical bug reports or insightful feature requests among the former, while among the latter are useful contributions or bug fixes that would improve Matplotlib for direct users and downstream packages. The backlog is discouraging for new and occasional contributor and distracting for core developers.
+We have accumulated about 1200 open Issues and 300 open PRs due to this imbalance. There may be critical bug reports or insightful feature requests among the former, while among the latter are useful contributions or bug fixes that would improve Matplotlib for direct users and downstream packages. The backlog is discouraging for new and occasional contributors and distracting for core developers.
 
 To maintain Matplotlib's health we need to:
 %% these can probably be shortened further, to just stuff like Triage and on board 
 %%since explainations are in text
 \begin{itemize}[noitemsep]
 \item Fix critical bugs and regressions
-\item Triage backlog of Issues and PRs in terms of
-  topic, difficulty, and urgency and promptly triage newly
-  opened Issues and PRs
-\item Maintain backward compatibility and document extensively for intentional changes
+\item Triage backlog of Issues and PRs in terms of topic, difficulty, and urgency and promptly triage newly opened Issues and PRs
+\item Maintain backward compatibility and extensively document intentional changes
 \item On-board new contributors to sustain and diversify developer team
 \item Manage discussions about proposed enhancements, features, and API changes
 \end{itemize}
@@ -100,8 +93,7 @@ The requested support for developers is intended to complement and facilitate, n
 
 \subsection{Road-map and Architecture}
 Matplotlib needs sustained attention to update the library's architecture for the next decade.
-The current architecture\footnote{\url{https://www.aosabook.org/en/matplotlib.html}} of Matplotlib was 
-developed over 15 years ago \cite{Hunter:2007} and has served us well, but it does not reflect recent developments in software design, data structures, and visualization. We aim to take advantage of these developments to improve the consistency, composability, and discoverabilty of the API. The ultimate goal is facilitating rich interactive domain-specific visualizations.
+The architecture\footnote{\url{https://www.aosabook.org/en/matplotlib.html}} of Matplotlib was developed over 15 years ago \cite{Hunter:2007} and has served us well, but it does not reflect recent developments in software design, data structures, and visualization. We aim to take advantage of these developments to improve the consistency, composability, and discoverabilty of the API. The ultimate goal is facilitating rich interactive domain-specific visualizations.
 
 
 %% We will develop
@@ -115,7 +107,7 @@ developed over 15 years ago \cite{Hunter:2007} and has served us well, but it do
 \subsubsection{Homogenization of the Application Programming Interface (API)}
 \label{sec:api_hom}
 % should we merge this into the next section?
-The library has grown organically over time through the contributions of over 900 individuals, and the code has accumulated many small inconsistencies in the API. For example, similar methods have different
+The library has grown organically over time through the contributions of over 900 individuals, accumulating many small inconsistencies in the API. For example, similar methods have different
 argument order, e.g., \texttt{ax.text(x, y, s)} vs
 \texttt{ax.annotation(s, (x, y))}, and some keyword (named) arguments can be
 singular or plural, e.g., \texttt{color} vs \texttt{colors}.  These
@@ -143,13 +135,13 @@ The main namespace for plotting methods in the \texttt{OO} API is
 methods on the \texttt{Axes} class, which leads to three issues:
 \begin{enumerate}
 \item Third party domain-specific packages can never feel ``First
-Class'', as their plotting functions will not be implemented as
-\texttt{Axes} methods like the ``built in'' ones.
-\item Some visualizations require plotting to more than one \texttt{Axes}, which 
+Class'' as their plotting functions will not be implemented as
+\texttt{Axes} methods like the ``built in'' ones. 
+%% not really explained why this is bad
+\item Some visualizations require plotting to multiple \texttt{Axes}es, which 
 doesn't fit the model in which plots are made via \texttt{Axes} methods.
 \item There are over 250 methods on the \texttt{Axes}---all of the
-plotting methods and some additional \texttt{Axes} specific
-methods---which makes it extremely hard to use tab-completion to
+plotting and some additional \texttt{Axes}---which makes it extremely hard to use tab-completion to
 search for a method.
 \end{enumerate}
 
@@ -160,7 +152,7 @@ and call conventions, as discussed in \ref{sec:api_hom} and return the
 \texttt{Artist}s discussed in section \ref{sec:artists}. From the
 large pool of plotting functions, augmented in collaboration with
 downstream libraries, we will curate domain-specific namespaces to
-enable users to discover the functionality they need.
+facilitate discoverability.
 
 This large-scale refactoring requires dedicated developer time to
 carefully consider and engage with our users about the consequences.
@@ -182,7 +174,7 @@ a uniform update interface, making interactive visualizations easier to develop.
 
 \subsubsection{Data Model}
 \label{sec:dm}
-Matplotlib needs a consistent way for \texttt{Artist}s to access their underlying data. Currently, each plotting method and \texttt{Artist} handles sanitizing and storing data independently. Hence, some common functionality, such as handling data with attached units (e.g., degrees Celsius, dates), is scattered throughout the code base. This leads to inconsistencies across the library and makes it difficult for users to write code that updates interactive explorations and animations. Matplotlib also cannot exploit ``Structured data''--combining multiple pieces of (possibly heterogeneous) data along with labels and metadata into single data structure; instead users must extract data elements and reassemble them as arguments for Matplotlib plotting functions.
+Matplotlib needs a consistent way for \texttt{Artist}s to access their underlying data. Currently, each plotting method and \texttt{Artist} handles sanitizing and storing data independently. Hence, some common functionality, such as handling data with attached units (e.g., degrees Celsius, dates), is scattered throughout the code base. This leads to inconsistencies across the library and makes it difficult for users to write code that updates interactive explorations and animations. Matplotlib also cannot exploit ``Structured data''--combining multiple pieces of (possibly heterogeneous) data with labels and metadata into single data structure; instead users must extract data elements and reassemble them as arguments to Matplotlib plotting functions.
 
 We will develop a data access API such that each \texttt{Artist} will have a single \texttt{Data} object responsible for holding the data. This model will be the technical underpinning to handle, exploit, and
 update structured data in a coherent fashion. By removing direct data storage from the \texttt{Artist}s and defining an API for data sources we will enable:
@@ -194,7 +186,7 @@ update structured data in a coherent fashion. By removing direct data storage fr
   \item use of alternative data sources such as database queries or analytic functions
 \end{itemize}
 
-This will decouple the implementation of the data sources from the \texttt{Artist}s.  Downstream libraries will be able to provide sophisticated data sources to the \texttt{Artists} in the core library, build complex \texttt{Artist}s that use the data sources from core, and create specialized forms of the data model for increased efficiency. 
+This will decouple the implementation of the data sources from the \texttt{Artist}s.  Downstream libraries will be able to provide sophisticated data sources to the core library \texttt{Artists}, build complex \texttt{Artist}s that use those sources, and create specialized forms of the data model.  
 
 % \subsubsection{Additional Export Methods}
 % % maybe nuke this section?
@@ -219,7 +211,7 @@ or PRs take minutes to review while others can take days to
 months of effort---but we believe that there is value at looking at
 the number of open Issues and PRs.  We will reduce this number by closing Issues and PRs at a faster rate than they are opened until a reasonable equilibrium is reached. With the introduction of paid developers, NumPy has had success in reversing the ever increasing trends in the number of Issues and Pull Requests\footnote{https://github.com/seberg/numpy\_talk\_plots/blob/master/plots\_used\_in\_talk/issues\_prs\_delta.pdf}. Once the backlog is handled, we aim to have all new Issues and Pull Requests labeled within 7 days of being opened.
 
-We will evaluate the success of our new contributor onboarding by aiming to increase the percentage of new contributor PRs that get resolved and by decreasing the amount of time it takes for resolution. We also aim to increase the number of PRs submitted by non core developers. 
+Improved contributor onboarding should yield an increase in the percentage of new contributor PRs that get resolved, a decrease in the amount of time it takes for resolution, and an increase the number of PRs submitted by non core developers. 
 
 
 \subsection{Road-map and Architecture}
@@ -234,56 +226,38 @@ We will write a white paper with a road map documenting the proposed design, cri
 %    show some recognition of reality.
 
 \section{Downstream Libraries}
-To validate the design, we will develop end-to-end prototypes targeting one or more of the life-science libraries discussed in \ref{sec:downstream}. We will qualitatively assess downstream library developers engagement with the prototypes and when possible incorporate their feedback into the design. 
+To validate the design, we will develop end-to-end prototypes targeting one or more of the life-science libraries discussed in \ref{sec:downstream} and qualitatively assess downstream library developers engagement with these prototypes.
 
 \section{Work Plan}
 
 We request funding for the following:
 
-
 \begin{itemize}[noitemsep]
 
-\item Fund Thomas Caswell's position at 40\%.  Caswell is
-  currently the Lead Developer of Matplotlib and an Associate
+\item Fund Thomas Caswell's position at 40\%.  Caswell is the Lead Developer of Matplotlib and an Associate
   Computational Scientist at Brookhaven National Laboratory.  His
   long-term experience, API design expertise, and project leadership
   are critical to the success of the work in this proposal.  He will work
   on all aspects of the proposal.
 \item Hannah Aizenman's position for 12 months.  Aizenman has
-  been a core-contributor to Matplotlib for three years. She has helped lead outreach efforts such as
-  Matplotlib's Google Summer of Code participation and is the author of a major recent feature set
-  (support for string-categorical values).
-  %% dunno, like mostly if I'm responsibly for new contributor onboarding,
-  %% do I need to explain why I'm qualified to do this?
-  % no
-  She is a PhD candidate in computer science studying visualization at The
-  Graduate Center, CUNY.  Her work on the architecture of
-  Matplotlib will be the basis of her PhD thesis.  Aizenman will take
+  been a core developer to Matplotlib for three years. She has helped 
+  lead outreach efforts and is the author of a recent feature set.
+  She is a PhD candidate in Computer Science, studying visualization at The
+  Graduate Center, CUNY. Her work on the architecture of Matplotlib will be 
+  the basis of her PhD thesis. Aizenman will take
   the lead on the data model design and new-contributor on-boarding.
-\item Summer support for Micheal Grossberg, Hannah Aizenman's PhD advisor.
-\item 12 months of a yet-to-be identified software engineer to
-
-  support all aspects of the proposal but focusing on maintenance,
-  prototyping, and engaging down-stream libraries.
-\item Travel to key Scientific and Python conferences (such as SciPy
-  or PyCon) and for in-person meetings if required.
+\item Summer support for Michael Grossberg, Aizenman's PhD advisor.
+\item 12 months of a yet-to-be identified software engineer to support all aspects of the proposal but focusing on maintenance, prototyping, and engaging down-stream libraries.
+\item Travel to key conferences (such as SciPy or PyCon) and for in-person meetings
 \end{itemize}
 
-We want to use this dedicated effort to leverage and empower the
-Matplotlib developer community.  In terms of direct work on the code
-base, equal amounts of time will be spent mentoring and reviewing
-code from community members, and directly implementing features
-or fixing bugs.  All of the design work will be done in public with
-input from the community.
-
-Part of this work is to develop the project Road Map.
+We want to use this dedicated effort to leverage and empower the Matplotlib developer community.  In terms of direct work, equal amounts of time will be spent mentoring and reviewing code from community members and directly implementing features or fixing bugs.  All of the design work will be done in public with
+input from the community. Part of this work is to develop the project Road Map.
 
 
 
 \section{Existing Support}
-
-Thomas Caswell has 4hrs/wk from Brookhaven National Lab to work on
-Matplotlib.
+Thomas Caswell has 4hrs/wk from Brookhaven National Lab to work on Matplotlib.
 
 
 \clearpage
