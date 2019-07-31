@@ -17,7 +17,7 @@
 \pagestyle{fancy}
 
 \begin{document}
-\title{Matplotlib - Foundation of Visualization in Python}
+\title{Matplotlib - Foundation of Scientific Visualization in Python}
 \author{}
 \maketitle
 
@@ -36,7 +36,7 @@ microscopy, and genomics
   Segata2011,10.1371/journal.pgen.1000695,HASHIMSHONY2012666,
   10.1093/bioinformatics/bts480,Carlile2014,Laganowsky2014,Jiangaac9462,
   10.3389/fninf.2014.00014}, and we expect this user base to continue
-to grow as Python is further adopted in the life sciences.
+to grow as Python continues to be adopted in the life sciences.
 
 Matplotlib has been actively developed and maintained by a vibrant,
 primarily volunteer, community over the last 16 years.  However, given
@@ -70,12 +70,12 @@ Matplotlib, laying the groundwork for the next 16 years by supporting:
 Matplotlib is a community-driven project, but we have grown to the
 % contemplating deleting "with the time"
 point where we need supported developers with the time to organize,
-plan, and make timely decisions.  Currently, new Issues and Pull
-Requets (PRs) are being submitted faster than our volunteers can
+plan, and make timely decisions.  Currently, new Issues and PRs
+are being submitted faster than our volunteers can
 review them.  For the past few years, we have closed about 43 Issues
 and merged 33 PRs month; and however every month about 51 new issues
 are opened and 40 PRs are proposed.  We have accumulated about 1200 open issues and
-300 open PRs.  Among the former there may be critical bug reports or
+300 open PRs due to this slight imbalance.  Among the former there may be critical bug reports or
 insightful feature requests and among the latter are useful
 contributions or bug fixes that would improve Matplotlib for direct
 users and downstream packages.  The backlog is discouraging for new or
@@ -84,8 +84,8 @@ occasional contributors, and distracting for core developers.
 To maintain Matplotlib's health we need to:
 
 \begin{itemize}[noitemsep]
-\item Label and review current backlog of Issues and PRs in terms of
-  topic, difficulty, and urgency.  Promptly label and review newly
+\item Review and label current backlog of Issues and PRs in terms of
+  topic, difficulty, and urgency.  Promptly review and label newly
   opened Issues and PRs
 \item Fix critical bugs and regressions promptly.
 \item On-board new contributors to the project team; this is critical to
@@ -141,7 +141,7 @@ ultimate goal is facilitating rich interactive domain-specific visualizations.
 % should we merge this into the next section?
 The library has grown organically over time through the contributions
 of many people (over 900 individuals), and the code has accumulated
-many small inconsistencies in the API.  Similar methods have different
+many small inconsistencies in the API.  For example, similar methods have different
 argument order, e.g., \texttt{ax.text(x, y, s)} vs
 \texttt{ax.annotation(s, (x, y))}, and some keyword arguments can be
 singular or plural, e.g., \texttt{color} vs \texttt{colors}.  These
@@ -208,16 +208,16 @@ carefully consider and engage with our users about the consequences.
 \subsubsection{Rich, Semantic \texttt{Artist}s}
 \label{sec:artists}
 \texttt{Artist}s are the ``middle layer'' of Matplotlib that encode
-user-intent, style, and data.
-To update the style or data users interact with the \texttt{Artist}
-objects, and \texttt{Artist}s know how to
-translate that intent on to the rendered output.
+user-intent, style, and data.  \texttt{Artist}s know how to
+translate that intent on to the rendered output and
+users interact with the \texttt{Artist}
+objects to update the data or style.
 
 We need to embrace composite artists
 to provide a smarter, more uniform \texttt{Artist} API.
 Currently, Matplotlib has a mix of ``primitive'' \texttt{Artist}s
 (e.g., lines, images, and text) and ``composite'' artists (e.g.,
-the whole \texttt{Figure}).
+the whole \texttt{Axes}).
 Presently the mapping between the user API and the \texttt{Artist}s can be
 one-to-one, but often one user call will generate many decoupled
 primitive \texttt{Artist}s.
@@ -241,13 +241,12 @@ Matplotlib needs a consistent way for \texttt{Artist}s to access their
 underlying data.
 Currently, each plotting method and \texttt{Artist} handles sanitizing
 and storing data independently.
-Hence some common functionality, such as handling data with attached
+Hence, some common functionality, such as handling data with attached
 units (e.g., degrees Celsius, dates), is scattered throughout the code
 base.
-These lead to inconsistencies across the library and makes it
+This leads to inconsistencies across the library and makes it
 difficult for users to write code that updates the data or style for interactive
 exploration and animation.
-
 ``Structured data''--combining multiple pieces of (possibly
 heterogeneous) data along with labels and metadata into single data
 structure--is revolutionizing science, but is not fully exploited by
@@ -259,9 +258,8 @@ functions must be done at the level of user code.
 
 
 We will develop a data access API such that each \texttt{Artist} will
-have a \texttt{Data} object responsible for actually holding the data.
-This model will support the base Matplotlib library and, more
-importantly, will be the technical underpinning to handle, exploit, and
+have a single \texttt{Data} object responsible for actually holding the data.
+This model be the technical underpinning to handle, exploit, and
 update structured data in a coherent fashion.
 By removing the direct data storage from
 the \texttt{Artist}s and defining an API for data sources we will enable:
@@ -273,7 +271,7 @@ the \texttt{Artist}s and defining an API for data sources we will enable:
   %% this one maybe too much, cool idea, but not really mentioned anywhere else
   \item use of alternative data sources such as database queries or analytic functions
 \end{itemize}
-This will decouple the development of the data sources from the
+This will decouple the implementation of the data sources from the
 \texttt{Artist}s.  Downstream libraries will be able to provide
 sophisticated data sources to the \texttt{Artists} in the core library
 or sophisticated \texttt{Artist}s that use the data sources from
@@ -305,8 +303,8 @@ core.
 
 The most common visualizations in a domain need to be fluid for the
 end-practitioners, with the ``obvious'' customization options exposed.
-Much of the domain-specific specialization carried in the semantics
-and structure of the data, the assumptions that can be made about the
+Much of the domain-specific specialization carried in the structure
+and semantics of the data, assumptions  about the
 data, and the standard visualizations of the domain.  All three can
 vary widely, in contradictory ways, between domains.  No high-level
 API can simultaneously satisfy all of the visualization needs for all
@@ -320,7 +318,6 @@ We will develop a set of guidelines for the APIs so that downstream
 libraries inter-operate well and ``feel'' similar, as well as tools
 and templates to make the process of developing a new library
 painless.
-
 We will engage with libraries in the life sciences that are currently
 using Matplotlib for their visualization to ensure that we are
 addressing their problems and to collaborate on prototyping a
