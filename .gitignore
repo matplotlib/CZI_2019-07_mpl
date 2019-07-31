@@ -7,4 +7,5 @@
 *.aux
 *.fdb_latexmk
 *.fls
-*.synctex
+*.synctex.gz
+*.gz
